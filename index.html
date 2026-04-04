@@ -52,7 +52,7 @@
     <script type="text/babel">
         const { motion } = window.Motion;
 
-        const getDirectLink = (id) => `https://lh3.googleusercontent.com/u/0/d/${id}`;
+        const getDirectLink = (id) => `https://lh3.googleusercontent.com/d/${id}`;
 
         const containerVariants = {
             hidden: { opacity: 0 },
@@ -70,11 +70,8 @@
             }
         };
 
-        // --- ВОССТАНОВЛЕННАЯ АНИМАЦИЯ ОТРИСОВКИ КОЛЬЦА (С ФИКСОМ ДЛЯ IOS) ---
         const AnimatedCircle = () => {
-            // Для радиуса 40 длина окружности L = 2 * PI * 40 = 251.32
-            // Мы жестко задаем эту длину, чтобы Safari на iOS гарантированно видел её.
-            const totalLength = 251.32; 
+            const totalLength = 251.32; // 2 * PI * 40
 
             return (
                 <motion.svg 
@@ -97,23 +94,18 @@
                         strokeWidth="2"
                         fill="none"
                         strokeLinecap="round"
-                        // Поворачиваем, чтобы отрисовка начиналась ровно сверху
                         transform="rotate(-90 50 50)" 
                         style={{
-                            // Жестко задаем массив черточек равный длине окружности
                             strokeDasharray: totalLength,
-                            // Для оптимизации рендеринга на мобильных
                             willChange: "stroke-dashoffset" 
                         }}
-                        // initial: линия полностью сдвинута (не видна)
                         initial={{ strokeDashoffset: totalLength }}
-                        // animate: когда элемент в поле зрения, сдвиг становится 0 (линия рисуется)
                         whileInView={{ strokeDashoffset: 0 }}
                         viewport={{ once: true, margin: "-10px" }}
                         transition={{ 
-                            duration: 2.0, // Медленная, премиальная отрисовка
-                            ease: [0.16, 1, 0.3, 1], // Плавный выезд
-                            delay: 0.5 // Задержка перед началом
+                            duration: 2.0,
+                            ease: [0.16, 1, 0.3, 1],
+                            delay: 0.6
                         }}
                     />
                 </motion.svg>
@@ -168,7 +160,7 @@
                     <p className="font-medium">{location}</p>
                     <p className="opacity-80 text-xs">{address}</p>
                 </div>
-                <a href={mapLink} target="_blank" className="inline-block text-[10px] uppercase tracking-[0.2em] text-[#8C7E6A] border-b border-[#8C7E6A] pb-1">Посмотреть карту</a>
+                <a href={mapLink} target="_blank" className="inline-block text-[10px] uppercase tracking-[0.2em] text-[#8C7E6A] border-b border-[#8C7E6A] pb-1 hover:opacity-50 transition-opacity">Посмотреть карту</a>
             </motion.div>
         );
 
@@ -178,13 +170,12 @@
 
             return (
                 <div className="bg-[#F9F6F0] w-full overflow-x-hidden">
-                    {/* HERO */}
                     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden px-4">
                         <motion.div initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 15 }} className="absolute inset-0 z-0">
                             <div className="absolute inset-0 z-10 overlay-gradient" />
                             <img 
                                 src={getDirectLink(heroId)} 
-                                className="w-full h-full object-cover" 
+                                className="w-full h-full object-cover grayscale-[10%]" 
                                 alt="Николай & Анастасия"
                                 onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000"; }}
                             />
@@ -196,7 +187,7 @@
                             animate="visible"
                             className="relative z-20 text-center w-full max-w-lg text-backdrop"
                         >
-                            <motion.p variants={itemVariants} className="font-alt uppercase tracking-[0.5em] text-[11px] text-[#6B5E4C] mb-6 md:mb-8 font-light">
+                            <motion.p variants={itemVariants} className="font-alt uppercase tracking-[0.5em] text-[11px] text-[#6B5E4C] mb-6 md:mb-8 font-light opacity-90">
                                 Приглашение на свадьбу
                             </motion.p>
                             
@@ -210,12 +201,11 @@
 
                             <motion.div variants={itemVariants} className="flex flex-col items-center">
                                 <div className="w-12 h-[1px] bg-[#8C7E6A] mb-6 md:mb-8 opacity-40" />
-                                <p className="font-sans text-[#2D2D2D] text-lg md:text-2xl tracking-[0.4em] font-extralight uppercase">20.06.2026</p>
+                                <p className="font-sans text-[#2D2D2D] text-lg md:text-2xl tracking-[0.4em] font-extralight uppercase opacity-90">20.06.2026</p>
                             </motion.div>
                         </motion.div>
                     </section>
 
-                    {/* ПРИВЕТСТВИЕ ОТ МОЛОДОЖЕН */}
                     <section className="py-20 px-6">
                         <motion.div 
                             initial={{ opacity: 0, y: 30 }}
@@ -235,7 +225,6 @@
                         </motion.div>
                     </section>
 
-                    {/* ПЛАН ДНЯ + КАЛЕНДАРЬ */}
                     <section className="py-16 md:py-24 px-6 md:px-20">
                         <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 md:gap-16">
                             <div>
@@ -259,9 +248,7 @@
                                     {['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d=><div key={d} className="opacity-60">{d}</div>)}
                                     {Array.from({length:30}, (_,i)=>i+1).map(date=>(
                                         <div key={date} className="relative py-2 flex items-center justify-center text-xs md:text-sm h-10 w-full">
-                                            {/* Компонент анимации */}
                                             {date===20 && <AnimatedCircle />}
-                                            {/* Текст даты поверх анимации */}
                                             <span className={`relative z-10 ${date===20 ? "text-black font-medium" : "opacity-30"}`}>
                                                 {date}
                                             </span>
@@ -272,7 +259,6 @@
                         </div>
                     </section>
 
-                    {/* ДРЕСС-КОД */}
                     <section className="py-16 md:py-24 px-6 bg-white">
                         <div className="max-w-3xl mx-auto text-center">
                             <h2 className="font-serif text-4xl md:text-5xl text-[#1A1A1A] mb-6 font-light">Dress Code</h2>
@@ -287,12 +273,11 @@
                         </div>
                     </section>
 
-                    {/* ПОДТВЕРЖДЕНИЕ */}
                     <section className="py-16 md:py-24 px-6 text-center bg-[#F9F6F0]">
                         <div className="max-w-2xl mx-auto px-4">
                             <h2 className="font-serif text-4xl md:text-5xl text-[#1A1A1A] mb-6 md:mb-8 font-light">Подтверждение</h2>
-                            <p className="font-serif italic text-xl md:text-2xl text-[#8C7E6A] mb-4 md:mb-6 leading-tight">Ждем встречи с вами!</p>
-                            <p className="font-sans font-light tracking-widest text-[9px] md:text-[10px] mb-10 md:mb-12 uppercase">
+                            <p className="font-serif italic text-xl md:text-2xl text-[#8C7E6A] mb-4 md:mb-6 leading-tight opacity-90">Ждем встречи с вами!</p>
+                            <p className="font-sans font-light tracking-widest text-[9px] md:text-[10px] mb-10 md:mb-12 uppercase opacity-80">
                                 Просим вас подтвердить присутствие до 20 мая
                             </p>
                             
