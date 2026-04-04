@@ -22,14 +22,13 @@
         .overlay-gradient {
             background: linear-gradient(to bottom, rgba(249, 246, 240, 0.1) 0%, rgba(249, 246, 240, 0.3) 50%, rgba(249, 246, 240, 0.7) 100%);
         }
-        /* Улучшенная прозрачная подложка со скруглением */
         .text-backdrop {
             background: rgba(249, 246, 240, 0.15);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 2.5rem; /* Скругленные углы */
-            padding: 2.5rem 1.5rem;
+            border-radius: 2.5rem;
+            padding: 3rem 1.5rem;
         }
     </style>
 </head>
@@ -133,7 +132,7 @@
                             animate="visible"
                             className="relative z-20 text-center w-full max-w-lg text-backdrop"
                         >
-                            <motion.p variants={itemVariants} className="font-sans uppercase tracking-[0.4em] text-[10px] text-[#6B5E4C] mb-6 md:mb-8">Save the Date</motion.p>
+                            {/* Строка Save the Date удалена по запросу */}
                             
                             <div className="flex flex-col items-center mb-6 md:mb-10">
                                 <motion.h1 variants={itemVariants} className="font-serif text-5xl md:text-8xl text-[#1A1A1A] font-light tracking-tight leading-tight">Николай</motion.h1>
