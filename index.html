@@ -14,6 +14,12 @@
       --text-main: #3b3632;
       --muted: #9b8f86;
       --border: #e0d4c8;
+      
+      --palette-1: #E6DED1;
+      --palette-2: #EAE0D5;
+      --palette-3: #D9E4DD;
+      --palette-4: #D0E1F0;
+      --palette-5: #F0E6EF;
     }
 
     * {
@@ -65,7 +71,7 @@
 
     .hero-title {
       font-family: "Playfair Display", serif;
-      font-size: clamp(24px, 6vw, 32px);
+      font-size: clamp(20px, 5vw, 32px);
       letter-spacing: 0.1em;
       text-transform: uppercase;
       text-align: center;
@@ -74,10 +80,12 @@
 
     .hero-names {
       font-family: "Playfair Display", serif;
-      font-size: clamp(32px, 8vw, 44px);
+      /* clamp делает шрифт гибким, nowrap запрещает перенос */
+      font-size: clamp(24px, 7vw, 44px);
       text-align: center;
       margin-bottom: 12px;
       line-height: 1.2;
+      white-space: nowrap; 
     }
 
     .hero-date {
@@ -225,7 +233,7 @@
       border-radius: 8px;
     }
 
-    /* Дресс-код */
+    /* Дресс-код и Палитра */
     .dress-subtitle {
       text-align: center;
       font-weight: 500;
@@ -235,18 +243,41 @@
     .dress-text {
       font-size: 14px;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
-    .dress-image-wrapper {
-      border-radius: 12px;
-      overflow: hidden;
-      background: #eee;
+    .palette-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
+      padding: 10px 0;
     }
 
-    .dress-image-wrapper img {
+    .palette-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: calc(33% - 10px);
+      max-width: 70px;
+    }
+
+    .palette-color {
       width: 100%;
-      display: block;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+      margin-bottom: 8px;
+    }
+
+    .palette-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-align: center;
+      line-height: 1.2;
     }
 
     /* Подтверждение */
@@ -272,20 +303,20 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .timer-item {
       background: white;
       padding: 10px;
-      min-width: 70px;
+      min-width: 65px;
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
     .timer-value {
       font-family: "Playfair Display", serif;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 600;
       color: var(--accent-dark);
     }
@@ -304,6 +335,10 @@
         align-items: baseline;
       }
       .timeline-time { min-width: 80px; }
+      
+      .palette-item {
+        width: calc(20% - 13px);
+      }
     }
   </style>
 </head>
@@ -405,9 +440,30 @@
             <h2 class="section-title">Дресс-код</h2>
             <p class="dress-subtitle">Style: Cocktail</p>
             <p class="dress-text">Будем признательны, если вы выберете наряды в пастельных тонах. Для дам просим избегать белого цвета.</p>
-            <div class="dress-image-wrapper">
-              <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800" alt="Dress code">
+            
+            <div class="palette-container">
+              <div class="palette-item">
+                <div class="palette-color" style="background-color: var(--palette-1);"></div>
+                <div class="palette-label">Пудровая роза</div>
+              </div>
+              <div class="palette-item">
+                <div class="palette-color" style="background-color: var(--palette-2);"></div>
+                <div class="palette-label">Светлый беж</div>
+              </div>
+              <div class="palette-item">
+                <div class="palette-color" style="background-color: var(--palette-3);"></div>
+                <div class="palette-label">Пыльный шалфей</div>
+              </div>
+              <div class="palette-item">
+                <div class="palette-color" style="background-color: var(--palette-4);"></div>
+                <div class="palette-label">Небесно-голубой</div>
+              </div>
+              <div class="palette-item">
+                <div class="palette-color" style="background-color: var(--palette-5);"></div>
+                <div class="palette-label">Нежная лаванда</div>
+              </div>
             </div>
+
           </div>
         </div>
       </section>
