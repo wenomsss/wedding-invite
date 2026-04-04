@@ -70,10 +70,12 @@
             }
         };
 
-        // --- ФИНАЛЬНЫЙ АНИМИРОВАННЫЙ КРУЖОК (ФИКС ДЛЯ IOS / IPHONE) ---
+        // --- ВОССТАНОВЛЕННАЯ АНИМАЦИЯ ОТРИСОВКИ КОЛЬЦА (С ФИКСОМ ДЛЯ IOS) ---
         const AnimatedCircle = () => {
-            const circleLength = 251.32; // 2 * PI * 40
-            
+            // Для радиуса 40 длина окружности L = 2 * PI * 40 = 251.32
+            // Мы жестко задаем эту длину, чтобы Safari на iOS гарантированно видел её.
+            const totalLength = 251.32; 
+
             return (
                 <motion.svg 
                     viewBox="0 0 100 100" 
@@ -95,17 +97,23 @@
                         strokeWidth="2"
                         fill="none"
                         strokeLinecap="round"
-                        initial={{ strokeDashoffset: circleLength, strokeDasharray: circleLength, opacity: 0, rotate: -90 }}
-                        whileInView={{ strokeDashoffset: 0, opacity: 1 }}
-                        viewport={{ once: true, margin: "-10px" }}
-                        style={{ 
-                            originX: "50px", 
-                            originY: "50px",
-                            willChange: "stroke-dashoffset, opacity"
+                        // Поворачиваем, чтобы отрисовка начиналась ровно сверху
+                        transform="rotate(-90 50 50)" 
+                        style={{
+                            // Жестко задаем массив черточек равный длине окружности
+                            strokeDasharray: totalLength,
+                            // Для оптимизации рендеринга на мобильных
+                            willChange: "stroke-dashoffset" 
                         }}
+                        // initial: линия полностью сдвинута (не видна)
+                        initial={{ strokeDashoffset: totalLength }}
+                        // animate: когда элемент в поле зрения, сдвиг становится 0 (линия рисуется)
+                        whileInView={{ strokeDashoffset: 0 }}
+                        viewport={{ once: true, margin: "-10px" }}
                         transition={{ 
-                            strokeDashoffset: { duration: 1.8, ease: [0.16, 1, 0.3, 1], delay: 0.5 },
-                            opacity: { duration: 0.4, delay: 0.5 }
+                            duration: 2.0, // Медленная, премиальная отрисовка
+                            ease: [0.16, 1, 0.3, 1], // Плавный выезд
+                            delay: 0.5 // Задержка перед началом
                         }}
                     />
                 </motion.svg>
@@ -207,7 +215,7 @@
                         </motion.div>
                     </section>
 
-                    {/* ПРИВЕТСТВИЕ */}
+                    {/* ПРИВЕТСТВИЕ ОТ МОЛОДОЖЕН */}
                     <section className="py-20 px-6">
                         <motion.div 
                             initial={{ opacity: 0, y: 30 }}
@@ -251,7 +259,9 @@
                                     {['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d=><div key={d} className="opacity-60">{d}</div>)}
                                     {Array.from({length:30}, (_,i)=>i+1).map(date=>(
                                         <div key={date} className="relative py-2 flex items-center justify-center text-xs md:text-sm h-10 w-full">
+                                            {/* Компонент анимации */}
                                             {date===20 && <AnimatedCircle />}
+                                            {/* Текст даты поверх анимации */}
                                             <span className={`relative z-10 ${date===20 ? "text-black font-medium" : "opacity-30"}`}>
                                                 {date}
                                             </span>
@@ -287,18 +297,17 @@
                             </p>
                             
                             <div className="grid md:grid-cols-2 gap-4 md:gap-8 mb-16">
-                                <div className="p-6 md:p-8 bg-white border border-[#EAE2D6] rounded-2xl">
+                                <div className="p-6 md:p-8 bg-white border border-[#EAE2D6] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                                     <p className="font-sans text-[9px] uppercase tracking-[0.3em] text-[#8C7E6A] mb-3 opacity-70">Невеста</p>
                                     <p className="font-serif text-xl md:text-2xl mb-2 font-light">Анастасия</p>
-                                    <a href="tel:+79112783862" className="font-sans text-xs tracking-tighter text-[#2C2C2C]">+7 (911) 278-38-62</a>
+                                    <a href="tel:+79112783862" className="font-sans text-xs tracking-tighter text-[#2C2C2C] hover:text-[#8C7E6A] transition-colors">+7 (911) 278-38-62</a>
                                 </div>
-                                <div className="p-6 md:p-8 bg-white border border-[#EAE2D6] rounded-2xl">
+                                <div className="p-6 md:p-8 bg-white border border-[#EAE2D6] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                                     <p className="font-sans text-[9px] uppercase tracking-[0.3em] text-[#8C7E6A] mb-3 opacity-70">Жених</p>
                                     <p className="font-serif text-xl md:text-2xl mb-2 font-light">Николай</p>
-                                    <a href="tel:+79020445244" className="font-sans text-xs tracking-tighter text-[#2C2C2C]">+7 (902) 044-52-44</a>
+                                    <a href="tel:+79020445244" className="font-sans text-xs tracking-tighter text-[#2C2C2C] hover:text-[#8C7E6A] transition-colors">+7 (902) 044-52-44</a>
                                 </div>
                             </div>
-
                             <CountdownTimer targetDate="2026-06-20T15:30:00" />
                         </div>
                     </section>
