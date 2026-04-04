@@ -32,7 +32,6 @@
             border-radius: 2.5rem;
             padding: 3rem 1.5rem;
         }
-        /* Стиль для рамки приветственного блока */
         .welcome-border {
             border: 1px solid #EAE2D6;
             position: relative;
@@ -53,7 +52,8 @@
     <script type="text/babel">
         const { motion } = window.Motion;
 
-        const getDirectLink = (id) => `https://lh3.googleusercontent.com/u/0/d/${id}`;
+        // Функция для формирования прямой ссылки на Google Drive
+        const getDirectLink = (id) => `https://lh3.googleusercontent.com/d/${id}`;
 
         const containerVariants = {
             hidden: { opacity: 0 },
@@ -125,7 +125,7 @@
 
         function App() {
             const heroId = "1UKkIjvRcpwiEMMLd2YnqPMmFhbKUNVy_";
-            const paletteId = "1GpxIpHHytKv2W-l3gf37ddrf5wZvlpEu";
+            const paletteId = "1nGfb8tUxz1Wqf1NJ_yKuvCWpUZUYlH2J"; // Обновленный ID палитры
 
             return (
                 <div className="bg-[#F9F6F0] w-full overflow-x-hidden">
@@ -169,7 +169,7 @@
                         </motion.div>
                     </section>
 
-                    {/* НОВЫЙ БЛОК: ПРИВЕТСТВИЕ */}
+                    {/* ПРИВЕТСТВИЕ */}
                     <section className="py-20 px-6">
                         <motion.div 
                             initial={{ opacity: 0, y: 30 }}
