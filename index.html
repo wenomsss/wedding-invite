@@ -44,7 +44,6 @@
             border: 1px solid #EAE2D6;
             pointer-events: none;
         }
-        /* Анимация пульсации для кнопки музыки */
         @keyframes slow-pulse {
             0% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.05); opacity: 1; }
@@ -59,16 +58,13 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { motion, AnimatePresence } = window.Motion;
+        const { motion } = window.Motion;
 
         const getDirectLink = (id) => `https://lh3.googleusercontent.com/d/${id}`;
 
         const containerVariants = {
             hidden: { opacity: 0 },
-            visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.6, delayChildren: 0.4 }
-            }
+            visible: { opacity: 1, transition: { staggerChildren: 0.6, delayChildren: 0.4 } }
         };
 
         const itemVariants = {
@@ -83,33 +79,58 @@
             const [isPlaying, setIsPlaying] = React.useState(false);
             const audioRef = React.useRef(null);
             
-            // Джазовая мелодия (Royalty Free Jazz)
-            const musicUrl = "https://www.bensound.com/bensound-music/bensound-thejazzpiano.mp3";
+            // Прямая ссылка на спокойный джаз (Royalty Free)
+            const musicUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3";
 
-            const toggleMusic = () => {
+            const handlePlay = () => {
+                audioRef.current.play()
+                    .then(() => setIsPlaying(true))
+                    .catch(err => console.log("Autoplay blocked, waiting for interaction"));
+            };
+
+            const toggleMusic = (e) => {
+                e.stopPropagation(); // Чтобы клик по кнопке не срабатывал дважды с обработчиком на body
                 if (isPlaying) {
                     audioRef.current.pause();
+                    setIsPlaying(false);
                 } else {
-                    audioRef.current.play();
+                    handlePlay();
                 }
-                setIsPlaying(!isPlaying);
             };
+
+            React.useEffect(() => {
+                // Попытка включить при загрузке (сработает, если браузер позволит)
+                handlePlay();
+
+                // Если заблокировано, включаем при первом клике пользователя в любом месте
+                const enableAudio = () => {
+                    if (!isPlaying) handlePlay();
+                    window.removeEventListener('click', enableAudio);
+                };
+                window.addEventListener('click', enableAudio);
+
+                return () => window.removeEventListener('click', enableAudio);
+            }, []);
 
             return (
                 <div className="fixed bottom-6 right-6 z-50">
-                    <audio ref={audioRef} src={musicUrl} loop />
+                    <audio ref={audioRef} src={musicUrl} loop preload="auto" />
                     <button 
                         onClick={toggleMusic}
-                        className={`w-12 h-12 rounded-full bg-white/80 backdrop-blur-md border border-[#EAE2D6] shadow-lg flex items-center justify-center text-[#8C7E6A] transition-all duration-500 ${isPlaying ? 'music-btn-pulse' : 'opacity-70'}`}
+                        className={`w-14 h-14 rounded-full bg-white/90 backdrop-blur-md border border-[#EAE2D6] shadow-xl flex items-center justify-center text-[#8C7E6A] transition-all duration-500 ${isPlaying ? 'music-btn-pulse' : 'opacity-80 scale-90'}`}
                     >
                         {isPlaying ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M6 3a1 1 0 0 1 1 1v8a1 1 0 0 1-2 0V4a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v8a1 1 0 0 1-2 0V4a1 1 0 0 1 1-1z"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <rect x="6" y="4" width="4" height="16" />
+                                <rect x="14" y="4" width="4" height="16" />
                             </svg>
                         ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
-                            </svg>
+                            <div className="flex items-center justify-center relative">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                    <path d="M5 3l14 9-14 9V3z" fill="currentColor" />
+                                </svg>
+                                <span className="absolute -top-8 text-[8px] uppercase tracking-widest whitespace-nowrap opacity-60">Jazz On</span>
+                            </div>
                         )}
                     </button>
                 </div>
@@ -150,13 +171,7 @@
         };
 
         const ScheduleItem = ({ time, title, location, address, mapLink }) => (
-            <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1 }}
-                className="relative pl-8 pb-10 border-l border-[#8C7E6A]/30 last:pb-0"
-            >
+            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 1 }} className="relative pl-8 pb-10 border-l border-[#8C7E6A]/30 last:pb-0">
                 <div className="absolute left-[-5px] top-0 w-[9px] h-[9px] rounded-full bg-[#8C7E6A]" />
                 <span className="text-xs font-sans tracking-widest text-[#8C7E6A] uppercase">{time}</span>
                 <h3 className="font-serif text-2xl md:text-3xl my-2 text-[#1A1A1A]">{title}</h3>
@@ -180,35 +195,16 @@
                     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden px-4">
                         <motion.div initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 15 }} className="absolute inset-0 z-0">
                             <div className="absolute inset-0 z-10 overlay-gradient" />
-                            <img 
-                                src={getDirectLink(heroId)} 
-                                className="w-full h-full object-cover" 
-                                alt="Николай & Анастасия"
-                                onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000"; }}
-                            />
+                            <img src={getDirectLink(heroId)} className="w-full h-full object-cover" alt="Николай & Анастасия" onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000"; }} />
                         </motion.div>
                         
-                        <motion.div 
-                            variants={containerVariants}
-                            initial="hidden"
-                            animate="visible"
-                            className="relative z-20 text-center w-full max-w-lg text-backdrop"
-                        >
-                            <motion.p 
-                                variants={itemVariants} 
-                                className="font-alt uppercase tracking-[0.5em] text-[11px] text-[#6B5E4C] mb-6 md:mb-8 font-light"
-                            >
-                                Приглашение на свадьбу
-                            </motion.p>
-                            
+                        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="relative z-20 text-center w-full max-w-lg text-backdrop">
+                            <motion.p variants={itemVariants} className="font-alt uppercase tracking-[0.5em] text-[11px] text-[#6B5E4C] mb-6 md:mb-8 font-light">Приглашение на свадьбу</motion.p>
                             <div className="flex flex-col items-center mb-6 md:mb-10">
                                 <motion.h1 variants={itemVariants} className="font-serif text-5xl md:text-8xl text-[#1A1A1A] font-light tracking-tight leading-tight">Николай</motion.h1>
-                                <motion.div variants={itemVariants} className="my-2">
-                                    <span className="font-serif text-3xl md:text-5xl italic text-[#8C7E6A]">&</span>
-                                </motion.div>
+                                <motion.div variants={itemVariants} className="my-2"><span className="font-serif text-3xl md:text-5xl italic text-[#8C7E6A]">&</span></motion.div>
                                 <motion.h1 variants={itemVariants} className="font-serif text-5xl md:text-8xl text-[#1A1A1A] font-light tracking-tight leading-tight">Анастасия</motion.h1>
                             </div>
-
                             <motion.div variants={itemVariants} className="flex flex-col items-center">
                                 <div className="w-12 h-[1px] bg-[#8C7E6A] mb-6 md:mb-8 opacity-40" />
                                 <p className="font-sans text-[#2D2D2D] text-lg md:text-2xl tracking-[0.4em] font-extralight uppercase">20.06.2026</p>
@@ -218,21 +214,12 @@
 
                     {/* ПРИВЕТСТВИЕ */}
                     <section className="py-20 px-6">
-                        <motion.div 
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1.2 }}
-                            className="max-w-2xl mx-auto welcome-border p-10 md:p-16 text-center rounded-sm"
-                        >
+                        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1.2 }} className="max-w-2xl mx-auto welcome-border p-10 md:p-16 text-center rounded-sm">
                             <h2 className="font-serif text-3xl md:text-4xl text-[#1A1A1A] mb-8 italic">Дорогие гости!</h2>
                             <p className="font-serif text-xl md:text-2xl text-[#4A4A4A] leading-relaxed">
                                 Приглашаем вас стать свидетелями самого важного <span className="text-[#8C7E6A]">"ДА"</span> <br className="hidden md:block"/> 
                                 и разделить с нами наш первый семейный праздник.
                             </p>
-                            <div className="mt-8 flex justify-center">
-                                <div className="w-10 h-[1px] bg-[#8C7E6A] opacity-30" />
-                            </div>
                         </motion.div>
                     </section>
 
@@ -242,12 +229,11 @@
                             <div>
                                 <h2 className="font-serif text-4xl md:text-6xl text-[#1A1A1A] mb-10 md:mb-12 text-center lg:text-left">План дня</h2>
                                 <div className="max-w-md mx-auto lg:mx-0">
-                                    <ScheduleItem time="15:30" title="Сбор гостей" location="ЗАГС №1" address="Английская наб., 28, Санкт-Петербург" mapLink="https://yandex.ru/maps/-/CPV-4855" />
-                                    <ScheduleItem time="16:00" title="Роспись" location="ЗАГС №1" address="Английская наб., 28, Санкт-Петербург" mapLink="https://yandex.ru/maps/-/CPV-4855" />
-                                    <ScheduleItem time="17:00 — 23:59" title="Банкет" location="Резиденция К-5" address="Наб. реки Крестовки, 2, Санкт-Петербург" mapLink="https://yandex.ru/maps/-/CPV-aA7S" />
+                                    <ScheduleItem time="15:30" title="Сбор гостей" location="ЗАГС №1" address="Английская наб., 28, СПб" mapLink="https://yandex.ru/maps/-/CPV-4855" />
+                                    <ScheduleItem time="16:00" title="Роспись" location="ЗАГС №1" address="Английская наб., 28, СПб" mapLink="https://yandex.ru/maps/-/CPV-4855" />
+                                    <ScheduleItem time="17:00 — 23:59" title="Банкет" location="Резиденция К-5" address="Наб. реки Крестовки, 2, СПб" mapLink="https://yandex.ru/maps/-/CPV-aA7S" />
                                 </div>
                             </div>
-                            
                             <div className="bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-[#EAE2D6] self-start max-w-sm mx-auto w-full lg:max-w-none">
                                 <h3 className="font-serif text-2xl md:text-3xl text-center mb-6 md:mb-8 font-light tracking-wide">Июнь 2026</h3>
                                 <div className="grid grid-cols-7 gap-y-4 text-center text-[10px] font-sans tracking-widest text-[#8C7E6A]">
@@ -268,12 +254,6 @@
                         <div className="max-w-3xl mx-auto text-center">
                             <h2 className="font-serif text-4xl md:text-5xl text-[#1A1A1A] mb-6">Dress Code</h2>
                             <p className="font-sans font-light tracking-[0.1em] text-[#6B5E4C] mb-10 md:mb-12 uppercase text-xs italic">Cocktail</p>
-                            <p className="font-sans font-light leading-relaxed text-[#4A4A4A] mb-12 md:mb-16 text-sm md:text-base px-4">
-                                Мы будем благодарны, если вы поддержите стиль нашего вечера. <br className="hidden md:block"/>
-                                Пожалуйста, отдавайте предпочтение <span className="font-medium italic text-[#8C7E6A]">пастельным или приглушенным оттенкам</span> <br className="hidden md:block"/>
-                                и избегайте белого (для девушек).
-                            </p>
-                            <p className="font-serif italic text-lg text-[#8C7E6A] mb-6">Вдохновение для ваших образов:</p>
                             <img src={getDirectLink(paletteId)} className="w-full max-w-xl mx-auto rounded-xl shadow-sm" alt="Вдохновение" onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2000"; }} />
                         </div>
                     </section>
@@ -282,21 +262,15 @@
                     <section className="py-16 md:py-24 px-6 text-center bg-[#F9F6F0]">
                         <div className="max-w-2xl mx-auto px-4">
                             <h2 className="font-serif text-4xl md:text-5xl text-[#1A1A1A] mb-6 md:mb-8">Подтверждение</h2>
-                            <p className="font-serif italic text-xl md:text-2xl text-[#8C7E6A] mb-4 md:mb-6 leading-tight">Ждем встречи с вами!</p>
-                            <p className="font-sans font-light tracking-widest text-[9px] md:text-[10px] mb-10 md:mb-12 uppercase">
-                                Просим вас подтвердить присутствие до 20 мая
-                            </p>
-                            
-                            <div className="grid md:grid-cols-2 gap-4 md:gap-8 mb-16">
-                                <div className="p-6 md:p-8 bg-white border border-[#EAE2D6] rounded-2xl">
-                                    <p className="font-sans text-[9px] uppercase tracking-[0.3em] text-[#8C7E6A] mb-3 opacity-70">Невеста</p>
-                                    <p className="font-serif text-xl md:text-2xl mb-2">Анастасия</p>
-                                    <a href="tel:+79112783862" className="font-sans text-xs tracking-tighter text-[#2C2C2C]">+7 (911) 278-38-62</a>
+                            <p className="font-serif italic text-xl md:text-2xl text-[#8C7E6A] mb-12">Ждем встречи с вами!</p>
+                            <div className="grid md:grid-cols-2 gap-4 mb-16">
+                                <div className="p-6 bg-white border border-[#EAE2D6] rounded-2xl">
+                                    <p className="font-serif text-xl mb-2">Анастасия</p>
+                                    <a href="tel:+79112783862" className="text-xs">+7 (911) 278-38-62</a>
                                 </div>
-                                <div className="p-6 md:p-8 bg-white border border-[#EAE2D6] rounded-2xl">
-                                    <p className="font-sans text-[9px] uppercase tracking-[0.3em] text-[#8C7E6A] mb-3 opacity-70">Жених</p>
-                                    <p className="font-serif text-xl md:text-2xl mb-2">Николай</p>
-                                    <a href="tel:+79020445244" className="font-sans text-xs tracking-tighter text-[#2C2C2C]">+7 (902) 044-52-44</a>
+                                <div className="p-6 bg-white border border-[#EAE2D6] rounded-2xl">
+                                    <p className="font-serif text-xl mb-2">Николай</p>
+                                    <a href="tel:+79020445244" className="text-xs">+7 (902) 044-52-44</a>
                                 </div>
                             </div>
                             <CountdownTimer targetDate="2026-06-20T15:30:00" />
