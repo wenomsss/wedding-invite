@@ -1,103 +1,131 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приглашение: Николай и Анастасия</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@200;300&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-const HeroSection = () => {
-  // Анимация для заголовков (плавное всплытие + разрядка букв)
-  const titleVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 30, 
-      letterSpacing: "0.1em" 
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      letterSpacing: "0.2em",
-      transition: { duration: 1.8, ease: [0.16, 1, 0.3, 1] } 
-    },
-  };
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #F9F6F0;
+            overflow-x: hidden;
+        }
+        .font-serif { font-family: 'Cormorant Infant', serif; }
+        .font-sans { font-family: 'Montserrat', sans-serif; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-  const fadeUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 1, ease: "easeOut" } 
-    }
-  };
+    <script type="text/babel">
+        const { motion } = window.Motion;
 
-  return (
-    <section className="relative h-screen w-full flex items-center justify-center bg-[#F9F6F0] overflow-hidden">
-      {/* Background Layer */}
-      <motion.div 
-        initial={{ scale: 1.15 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 12, ease: "easeOut" }}
-        className="absolute inset-0 z-0"
-      >
-        <div className="absolute inset-0 bg-[#F9F6F0]/40 z-10" /> 
-        <img 
-          src="/assets/wedding-manor.jpg" // Рекомендую фото старинной усадьбы или сада
-          alt="Atmosphere" 
-          className="h-full w-full object-cover shadow-inner"
-        />
-      </motion.div>
+        function App() {
+            const containerVariants = {
+                hidden: { opacity: 0 },
+                visible: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.6, delayChildren: 0.3 }
+                }
+            };
 
-      {/* Main Content */}
-      <div className="relative z-20 flex flex-col items-center">
-        
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: { transition: { staggerChildren: 0.4 } } }}
-          className="text-center"
-        >
-          {/* Top Label */}
-          <motion.p 
-            variants={fadeUp}
-            className="text-[#8C7E6A] uppercase tracking-[0.5em] text-[10px] md:text-xs mb-10 font-light"
-          >
-            Приглашение на свадьбу
-          </motion.p>
+            const itemVariants = {
+                hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
+                visible: { 
+                    opacity: 1, 
+                    y: 0, 
+                    filter: 'blur(0px)',
+                    transition: { duration: 1.5, ease: [0.16, 1, 0.3, 1] } 
+                }
+            };
 
-          {/* Names Container */}
-          <div className="flex flex-col items-center mb-10">
-            <motion.h1 
-              variants={titleVariants}
-              className="font-serif text-5xl md:text-8xl text-[#2C2C2C] font-normal"
-            >
-              Николай
-            </motion.h1>
-            
-            <motion.div 
-              variants={fadeUp}
-              className="my-4 md:my-2"
-            >
-              <span className="font-serif text-3xl md:text-5xl italic text-[#8C7E6A]">и</span>
-            </motion.div>
+            return (
+                <main className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+                    {/* Фоновый слой с эффектом зума */}
+                    <motion.div 
+                        initial={{ scale: 1.2 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 15, ease: "easeOut" }}
+                        className="absolute inset-0 z-0"
+                    >
+                        <div className="absolute inset-0 bg-white/40 z-10" />
+                        <img 
+                            src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=2000" 
+                            alt="Background" 
+                            className="h-full w-full object-cover"
+                        />
+                    </motion.div>
 
-            <motion.h1 
-              variants={titleVariants}
-              className="font-serif text-5xl md:text-8xl text-[#2C2C2C] font-normal"
-            >
-              Анастасия
-            </motion.h1>
-          </div>
+                    {/* Контент */}
+                    <motion.div 
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="relative z-20 text-center px-4"
+                    >
+                        <motion.p 
+                            variants={itemVariants}
+                            className="font-sans uppercase tracking-[0.5em] text-[10px] md:text-xs text-[#8C7E6A] mb-8"
+                        >
+                            Save the Date
+                        </motion.p>
 
-          {/* Divider & Date */}
-          <motion.div variants={fadeUp} className="flex flex-col items-center">
-            <div className="w-12 h-[1px] bg-[#8C7E6A] mb-8 opacity-40" />
-            <p className="text-[#4A4A4A] text-lg md:text-2xl tracking-[0.3em] font-light uppercase">
-              20 — 06 — 2026
-            </p>
-          </motion.div>
-        </motion.div>
-      </div>
+                        <div className="flex flex-col items-center mb-10">
+                            <motion.h1 
+                                variants={itemVariants}
+                                className="font-serif text-6xl md:text-9xl text-[#2C2C2C] font-light tracking-wide"
+                            >
+                                Николай
+                            </motion.h1>
+                            
+                            <motion.div variants={itemVariants} className="my-2">
+                                <span className="font-serif text-3xl md:text-5xl italic text-[#8C7E6A]">и</span>
+                            </motion.div>
 
-      {/* Aesthetic Bottom Border */}
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#F9F6F0] to-transparent z-30" />
-    </section>
-  );
-};
+                            <motion.h1 
+                                variants={itemVariants}
+                                className="font-serif text-6xl md:text-9xl text-[#2C2C2C] font-light tracking-wide"
+                            >
+                                Анастасия
+                            </motion.h1>
+                        </div>
 
-export default HeroSection;
+                        <motion.div variants={itemVariants} className="flex flex-col items-center">
+                            <div className="w-16 h-[1px] bg-[#8C7E6A] mb-8 opacity-30" />
+                            <p className="font-sans text-[#4A4A4A] text-lg md:text-2xl tracking-[0.4em] font-extralight uppercase">
+                                20.06.2026
+                            </p>
+                        </motion.div>
+                    </motion.div>
+
+                    {/* Декоративный элемент снизу */}
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 2.5, duration: 2 }}
+                        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center"
+                    >
+                        <div className="w-[1px] h-12 bg-gradient-to-b from-[#8C7E6A] to-transparent opacity-50" />
+                    </motion.div>
+                </main>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
