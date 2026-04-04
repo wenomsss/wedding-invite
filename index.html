@@ -1,511 +1,103 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>Николай & Анастасия — 20.06.2026</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #f6f1ea;
-      --card-bg: #ffffff;
-      --accent: #c79a8b;
-      --accent-dark: #8b5f4f;
-      --text-main: #3b3632;
-      --muted: #9b8f86;
-      --border: #e0d4c8;
-      
-      --palette-1: #E6DED1;
-      --palette-2: #EAE0D5;
-      --palette-3: #D9E4DD;
-      --palette-4: #D0E1F0;
-      --palette-5: #F0E6EF;
+import React from 'react';
+import { motion } from 'framer-motion';
+
+const HeroSection = () => {
+  // Анимация для заголовков (плавное всплытие + разрядка букв)
+  const titleVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30, 
+      letterSpacing: "0.1em" 
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      letterSpacing: "0.2em",
+      transition: { duration: 1.8, ease: [0.16, 1, 0.3, 1] } 
+    },
+  };
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 1, ease: "easeOut" } 
     }
+  };
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  return (
+    <section className="relative h-screen w-full flex items-center justify-center bg-[#F9F6F0] overflow-hidden">
+      {/* Background Layer */}
+      <motion.div 
+        initial={{ scale: 1.15 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 12, ease: "easeOut" }}
+        className="absolute inset-0 z-0"
+      >
+        <div className="absolute inset-0 bg-[#F9F6F0]/40 z-10" /> 
+        <img 
+          src="/assets/wedding-manor.jpg" // Рекомендую фото старинной усадьбы или сада
+          alt="Atmosphere" 
+          className="h-full w-full object-cover shadow-inner"
+        />
+      </motion.div>
 
-    body {
-      font-family: "Montserrat", sans-serif;
-      background-color: var(--bg);
-      color: var(--text-main);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+      {/* Main Content */}
+      <div className="relative z-20 flex flex-col items-center">
+        
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: { transition: { staggerChildren: 0.4 } } }}
+          className="text-center"
+        >
+          {/* Top Label */}
+          <motion.p 
+            variants={fadeUp}
+            className="text-[#8C7E6A] uppercase tracking-[0.5em] text-[10px] md:text-xs mb-10 font-light"
+          >
+            Приглашение на свадьбу
+          </motion.p>
 
-    .page {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 24px 12px 60px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 600px;
-    }
-
-    .section {
-      margin-bottom: 32px;
-    }
-
-    .card {
-      background-color: var(--card-bg);
-      border-radius: 24px;
-      padding: 24px 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-title {
-      font-family: "Playfair Display", serif;
-      font-size: clamp(20px, 5vw, 32px);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .hero-names {
-      font-family: "Playfair Display", serif;
-      /* clamp делает шрифт гибким, nowrap запрещает перенос */
-      font-size: clamp(24px, 7vw, 44px);
-      text-align: center;
-      margin-bottom: 12px;
-      line-height: 1.2;
-      white-space: nowrap; 
-    }
-
-    .hero-date {
-      text-align: center;
-      font-size: 14px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .hero-divider {
-      width: 60px;
-      height: 1px;
-      background: var(--border);
-      margin: 20px auto 0;
-    }
-
-    .section-title {
-      font-family: "Playfair Display", serif;
-      font-size: 22px;
-      margin-bottom: 20px;
-      text-align: center;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--accent-dark);
-    }
-
-    .letter-text {
-      font-size: 15px;
-      text-align: center;
-      white-space: pre-line;
-      color: var(--text-main);
-    }
-
-    /* Календарь */
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-      margin-top: 16px;
-    }
-
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      padding: 0 4px;
-    }
-
-    .calendar-month {
-      font-family: "Playfair Display", serif;
-      font-size: 20px;
-    }
-
-    .calendar-weekday {
-      text-align: center;
-      font-size: 11px;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding-bottom: 8px;
-    }
-
-    .calendar-day {
-      aspect-ratio: 1 / 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      border-radius: 50%;
-    }
-
-    .calendar-day--active {
-      background: var(--accent);
-      color: white;
-      font-weight: 600;
-      position: relative;
-    }
-
-    .calendar-day--active::after {
-      content: "❤";
-      position: absolute;
-      bottom: -12px;
-      font-size: 10px;
-      color: var(--accent);
-    }
-
-    .calendar-note {
-      margin-top: 24px;
-      text-align: center;
-      font-size: 13px;
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    /* План дня */
-    .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .timeline-item {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--bg);
-    }
-
-    .timeline-item:last-child {
-      border-bottom: none;
-    }
-
-    .timeline-time {
-      font-weight: 600;
-      color: var(--accent-dark);
-      font-size: 14px;
-      background: var(--bg);
-      display: inline-block;
-      width: max-content;
-      padding: 2px 8px;
-      border-radius: 4px;
-    }
-
-    .timeline-title {
-      font-weight: 500;
-      font-size: 16px;
-    }
-
-    .timeline-place {
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .timeline-link {
-      display: inline-block;
-      margin-top: 8px;
-      color: var(--accent-dark);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 500;
-      border: 1px solid var(--accent);
-      padding: 6px 12px;
-      border-radius: 8px;
-    }
-
-    /* Дресс-код и Палитра */
-    .dress-subtitle {
-      text-align: center;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    .dress-text {
-      font-size: 14px;
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .palette-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 10px;
-      padding: 10px 0;
-    }
-
-    .palette-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: calc(33% - 10px);
-      max-width: 70px;
-    }
-
-    .palette-color {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 50%;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
-      margin-bottom: 8px;
-    }
-
-    .palette-label {
-      font-size: 9px;
-      text-transform: uppercase;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      text-align: center;
-      line-height: 1.2;
-    }
-
-    /* Подтверждение */
-    .confirm-contacts {
-      margin-top: 16px;
-      font-weight: 500;
-      text-align: center;
-      line-height: 1.8;
-    }
-
-    .confirm-contacts a {
-        color: var(--accent-dark);
-        text-decoration: none;
-    }
-
-    /* Таймер */
-    .timer-section {
-      text-align: center;
-      margin-top: 10px;
-    }
-
-    .timer {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .timer-item {
-      background: white;
-      padding: 10px;
-      min-width: 65px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
-
-    .timer-value {
-      font-family: "Playfair Display", serif;
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--accent-dark);
-    }
-
-    .timer-caption {
-      font-size: 10px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    @media (min-width: 768px) {
-      .page { padding: 40px 16px; }
-      .card { padding: 40px; }
-      .timeline-item {
-        flex-direction: row;
-        align-items: baseline;
-      }
-      .timeline-time { min-width: 80px; }
-      
-      .palette-item {
-        width: calc(20% - 13px);
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <div class="container">
-
-      <section class="section">
-        <div class="card">
-          <div class="card-inner">
-            <div class="hero-title">Приглашение</div>
-            <div class="hero-names">Николай &amp; Анастасия</div>
-            <div class="hero-date">20.06.2026</div>
-            <div class="hero-divider"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="card">
-          <div class="card-inner">
-            <h2 class="section-title">Письмо</h2>
-            <p class="letter-text">
-              Дорогие гости!
-              Мы приглашаем вас разделить с нами
-              День рождения нашей семьи.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="card">
-          <div class="card-inner">
-            <div class="calendar-header">
-              <div class="calendar-month">Июнь</div>
-              <div class="calendar-year">2026</div>
-            </div>
-            <div class="calendar">
-              <div class="calendar-weekday">Пн</div>
-              <div class="calendar-weekday">Вт</div>
-              <div class="calendar-weekday">Ср</div>
-              <div class="calendar-weekday">Чт</div>
-              <div class="calendar-weekday">Пт</div>
-              <div class="calendar-weekday">Сб</div>
-              <div class="calendar-weekday">Вс</div>
-              <div class="calendar-day">1</div><div class="calendar-day">2</div><div class="calendar-day">3</div>
-              <div class="calendar-day">4</div><div class="calendar-day">5</div><div class="calendar-day">6</div>
-              <div class="calendar-day">7</div><div class="calendar-day">8</div><div class="calendar-day">9</div>
-              <div class="calendar-day">10</div><div class="calendar-day">11</div><div class="calendar-day">12</div>
-              <div class="calendar-day">13</div><div class="calendar-day">14</div><div class="calendar-day">15</div>
-              <div class="calendar-day">16</div><div class="calendar-day">17</div><div class="calendar-day">18</div>
-              <div class="calendar-day">19</div><div class="calendar-day calendar-day--active">20</div><div class="calendar-day">21</div>
-              <div class="calendar-day">22</div><div class="calendar-day">23</div><div class="calendar-day">24</div>
-              <div class="calendar-day">25</div><div class="calendar-day">26</div><div class="calendar-day">27</div>
-              <div class="calendar-day">28</div><div class="calendar-day">29</div><div class="calendar-day">30</div>
-            </div>
-            <div class="calendar-note">20 июня, суббота — день нашей свадьбы</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="card">
-          <div class="card-inner">
-            <h2 class="section-title">План дня</h2>
-            <div class="timeline">
-              <div class="timeline-item">
-                <div class="timeline-time">15:30</div>
-                <div class="timeline-content">
-                  <div class="timeline-title">Сбор гостей · ЗАГС №1</div>
-                  <div class="timeline-place">Английская наб., 28</div>
-                  <a class="timeline-link" href="https://yandex.ru/maps/-/CPV-4855" target="_blank">На карту</a>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-time">16:00</div>
-                <div class="timeline-content">
-                  <div class="timeline-title">Торжественная роспись</div>
-                  <div class="timeline-place">ЗАГС №1</div>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-time">17:00</div>
-                <div class="timeline-content">
-                  <div class="timeline-title">Банкет</div>
-                  <div class="timeline-place">Резиденция К-5, Наб. реки Крестовки, 2</div>
-                  <a class="timeline-link" href="https://yandex.ru/maps/-/CPV-aA7S" target="_blank">На карту</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="card">
-          <div class="card-inner">
-            <h2 class="section-title">Дресс-код</h2>
-            <p class="dress-subtitle">Style: Cocktail</p>
-            <p class="dress-text">Будем признательны, если вы выберете наряды в пастельных тонах. Для дам просим избегать белого цвета.</p>
+          {/* Names Container */}
+          <div className="flex flex-col items-center mb-10">
+            <motion.h1 
+              variants={titleVariants}
+              className="font-serif text-5xl md:text-8xl text-[#2C2C2C] font-normal"
+            >
+              Николай
+            </motion.h1>
             
-            <div class="palette-container">
-              <div class="palette-item">
-                <div class="palette-color" style="background-color: var(--palette-1);"></div>
-                <div class="palette-label">Пудровая роза</div>
-              </div>
-              <div class="palette-item">
-                <div class="palette-color" style="background-color: var(--palette-2);"></div>
-                <div class="palette-label">Светлый беж</div>
-              </div>
-              <div class="palette-item">
-                <div class="palette-color" style="background-color: var(--palette-3);"></div>
-                <div class="palette-label">Пыльный шалфей</div>
-              </div>
-              <div class="palette-item">
-                <div class="palette-color" style="background-color: var(--palette-4);"></div>
-                <div class="palette-label">Небесно-голубой</div>
-              </div>
-              <div class="palette-item">
-                <div class="palette-color" style="background-color: var(--palette-5);"></div>
-                <div class="palette-label">Нежная лаванда</div>
-              </div>
-            </div>
+            <motion.div 
+              variants={fadeUp}
+              className="my-4 md:my-2"
+            >
+              <span className="font-serif text-3xl md:text-5xl italic text-[#8C7E6A]">и</span>
+            </motion.div>
 
+            <motion.h1 
+              variants={titleVariants}
+              className="font-serif text-5xl md:text-8xl text-[#2C2C2C] font-normal"
+            >
+              Анастасия
+            </motion.h1>
           </div>
-        </div>
-      </section>
 
-      <section class="section">
-        <div class="card">
-          <div class="card-inner">
-            <h2 class="section-title">Подтверждение</h2>
-            <p class="letter-text">Пожалуйста, подтвердите ваше участие до 20.05.2026 любым удобным способом:</p>
-            <div class="confirm-contacts">
-              <a href="tel:+79112783862">Анастасия: +7 911 278-38-62</a><br>
-              <a href="tel:+79020445244">Николай: +7 902 044-52-44</a>
-            </div>
-          </div>
-        </div>
-      </section>
+          {/* Divider & Date */}
+          <motion.div variants={fadeUp} className="flex flex-col items-center">
+            <div className="w-12 h-[1px] bg-[#8C7E6A] mb-8 opacity-40" />
+            <p className="text-[#4A4A4A] text-lg md:text-2xl tracking-[0.3em] font-light uppercase">
+              20 — 06 — 2026
+            </p>
+          </motion.div>
+        </motion.div>
+      </div>
 
-      <section class="section timer-section">
-        <div class="timer" id="timer">
-          <div class="timer-item"><div class="timer-value" id="days">0</div><div class="timer-caption">дней</div></div>
-          <div class="timer-item"><div class="timer-value" id="hours">0</div><div class="timer-caption">часов</div></div>
-          <div class="timer-item"><div class="timer-value" id="minutes">0</div><div class="timer-caption">мин</div></div>
-          <div class="timer-item"><div class="timer-value" id="seconds">0</div><div class="timer-caption">сек</div></div>
-        </div>
-      </section>
+      {/* Aesthetic Bottom Border */}
+      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#F9F6F0] to-transparent z-30" />
+    </section>
+  );
+};
 
-    </div>
-  </div>
-
-  <script>
-    (function () {
-      const target = new Date("2026-06-20T15:30:00+03:00").getTime();
-      const update = () => {
-        const now = new Date().getTime();
-        const diff = Math.max(0, target - now);
-        document.getElementById("days").textContent = Math.floor(diff / 864e5);
-        document.getElementById("hours").textContent = String(Math.floor((diff % 864e5) / 36e5)).padStart(2, "0");
-        document.getElementById("minutes").textContent = String(Math.floor((diff % 36e5) / 6e4)).padStart(2, "0");
-        document.getElementById("seconds").textContent = String(Math.floor((diff % 6e4) / 1000)).padStart(2, "0");
-      };
-      update(); setInterval(update, 1000);
-    })();
-  </script>
-</body>
-</html>
+export default HeroSection;
