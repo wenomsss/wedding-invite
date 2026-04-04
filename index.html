@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Николай & Анастасия — 20.06.2026</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -23,11 +23,12 @@
     }
 
     body {
-      font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Montserrat", sans-serif;
       background-color: var(--bg);
       color: var(--text-main);
-      line-height: 1.6;
+      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     .page {
@@ -35,35 +36,26 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 16px 80px;
+      padding: 24px 12px 60px;
     }
 
     .container {
       width: 100%;
-      max-width: 720px;
+      max-width: 600px;
     }
 
     .section {
-      margin-bottom: 48px;
+      margin-bottom: 32px;
     }
 
     .card {
       background-color: var(--card-bg);
-      border-radius: 18px;
-      padding: 32px 24px;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+      border-radius: 24px;
+      padding: 24px 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.8);
       position: relative;
       overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), transparent 60%);
-      opacity: 0.7;
-      pointer-events: none;
     }
 
     .card-inner {
@@ -73,8 +65,8 @@
 
     .hero-title {
       font-family: "Playfair Display", serif;
-      font-size: 32px;
-      letter-spacing: 0.08em;
+      font-size: clamp(24px, 6vw, 32px);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       text-align: center;
       margin-bottom: 8px;
@@ -82,57 +74,58 @@
 
     .hero-names {
       font-family: "Playfair Display", serif;
-      font-size: 40px;
+      font-size: clamp(32px, 8vw, 44px);
       text-align: center;
       margin-bottom: 12px;
+      line-height: 1.2;
     }
 
     .hero-date {
       text-align: center;
-      font-size: 16px;
-      letter-spacing: 0.18em;
+      font-size: 14px;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--muted);
     }
 
     .hero-divider {
-      width: 80px;
+      width: 60px;
       height: 1px;
       background: var(--border);
-      margin: 24px auto 0;
+      margin: 20px auto 0;
     }
 
     .section-title {
       font-family: "Playfair Display", serif;
-      font-size: 24px;
-      margin-bottom: 16px;
+      font-size: 22px;
+      margin-bottom: 20px;
       text-align: center;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       color: var(--accent-dark);
     }
 
     .letter-text {
-      font-size: 16px;
+      font-size: 15px;
       text-align: center;
       white-space: pre-line;
+      color: var(--text-main);
     }
 
     /* Календарь */
-
     .calendar {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
+      gap: 4px;
       margin-top: 16px;
-      font-size: 14px;
     }
 
     .calendar-header {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 0 4px;
     }
 
     .calendar-month {
@@ -140,210 +133,177 @@
       font-size: 20px;
     }
 
-    .calendar-year {
-      color: var(--muted);
-      font-size: 14px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-
     .calendar-weekday {
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
       color: var(--muted);
+      padding-bottom: 8px;
     }
 
     .calendar-day {
-      width: 100%;
       aspect-ratio: 1 / 1;
-      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-main);
-      position: relative;
       font-size: 14px;
-    }
-
-    .calendar-day--empty {
-      background: transparent;
+      border-radius: 50%;
     }
 
     .calendar-day--active {
-      background: #fbe9e3;
-      color: var(--accent-dark);
+      background: var(--accent);
+      color: white;
       font-weight: 600;
-      box-shadow: 0 0 0 1px rgba(199, 154, 139, 0.4);
+      position: relative;
     }
 
     .calendar-day--active::after {
       content: "❤";
       position: absolute;
-      bottom: 4px;
-      font-size: 12px;
+      bottom: -12px;
+      font-size: 10px;
       color: var(--accent);
     }
 
     .calendar-note {
-      margin-top: 12px;
+      margin-top: 24px;
       text-align: center;
       font-size: 13px;
       color: var(--muted);
+      font-style: italic;
     }
 
     /* План дня */
-
     .timeline {
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      margin-top: 8px;
+      gap: 20px;
     }
 
     .timeline-item {
-      display: grid;
-      grid-template-columns: minmax(80px, 110px) 1fr;
-      column-gap: 16px;
-      row-gap: 4px;
-      padding-bottom: 12px;
-      border-bottom: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--bg);
     }
 
     .timeline-item:last-child {
       border-bottom: none;
-      padding-bottom: 0;
     }
 
     .timeline-time {
-      font-weight: 500;
+      font-weight: 600;
       color: var(--accent-dark);
       font-size: 14px;
+      background: var(--bg);
+      display: inline-block;
+      width: max-content;
+      padding: 2px 8px;
+      border-radius: 4px;
     }
 
     .timeline-title {
       font-weight: 500;
-      font-size: 15px;
+      font-size: 16px;
     }
 
     .timeline-place {
-      grid-column: 1 / -1;
       font-size: 14px;
       color: var(--muted);
     }
 
     .timeline-link {
+      display: inline-block;
+      margin-top: 8px;
       color: var(--accent-dark);
       text-decoration: none;
-      border-bottom: 1px solid rgba(199, 154, 139, 0.4);
-      padding-bottom: 1px;
-    }
-
-    .timeline-link:hover {
-      border-bottom-color: transparent;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--accent);
+      padding: 6px 12px;
+      border-radius: 8px;
     }
 
     /* Дресс-код */
-
     .dress-subtitle {
       text-align: center;
-      font-size: 15px;
-      margin-bottom: 12px;
+      font-weight: 500;
+      margin-bottom: 8px;
     }
 
     .dress-text {
       font-size: 14px;
       text-align: center;
-      color: var(--text-main);
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .dress-image-wrapper {
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
-      border: 1px solid var(--border);
-      background: #f3ebe3;
+      background: #eee;
     }
 
     .dress-image-wrapper img {
-      display: block;
       width: 100%;
-      height: auto;
-      object-fit: cover;
+      display: block;
     }
 
     /* Подтверждение */
-
-    .confirm-text {
-      font-size: 15px;
+    .confirm-contacts {
+      margin-top: 16px;
+      font-weight: 500;
       text-align: center;
-      margin-bottom: 16px;
+      line-height: 1.8;
     }
 
-    .confirm-contacts {
-      font-size: 14px;
-      text-align: center;
-      color: var(--muted);
-      white-space: pre-line;
+    .confirm-contacts a {
+        color: var(--accent-dark);
+        text-decoration: none;
     }
 
     /* Таймер */
-
     .timer-section {
       text-align: center;
-    }
-
-    .timer-label {
-      font-size: 14px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
+      margin-top: 10px;
     }
 
     .timer {
-      display: inline-flex;
-      gap: 10px;
-      padding: 12px 18px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.8);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.9);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
     }
 
     .timer-item {
-      min-width: 60px;
+      background: white;
+      padding: 10px;
+      min-width: 70px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
     .timer-value {
       font-family: "Playfair Display", serif;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 600;
       color: var(--accent-dark);
-      line-height: 1.1;
     }
 
     .timer-caption {
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
       color: var(--muted);
-      margin-top: 2px;
     }
 
     @media (min-width: 768px) {
-      .card {
-        padding: 40px 48px;
+      .page { padding: 40px 16px; }
+      .card { padding: 40px; }
+      .timeline-item {
+        flex-direction: row;
+        align-items: baseline;
       }
-
-      .hero-names {
-        font-size: 46px;
-      }
-
-      .hero-title {
-        font-size: 34px;
-      }
+      .timeline-time { min-width: 80px; }
     }
   </style>
 </head>
@@ -351,7 +311,6 @@
   <div class="page">
     <div class="container">
 
-      <!-- Первый экран -->
       <section class="section">
         <div class="card">
           <div class="card-inner">
@@ -363,21 +322,19 @@
         </div>
       </section>
 
-      <!-- Письмо -->
       <section class="section">
         <div class="card">
           <div class="card-inner">
             <h2 class="section-title">Письмо</h2>
             <p class="letter-text">
-Дорогие гости!
-Мы приглашаем вас разделить с нами
-День рождения нашей семьи.
+              Дорогие гости!
+              Мы приглашаем вас разделить с нами
+              День рождения нашей семьи.
             </p>
           </div>
         </div>
       </section>
 
-      <!-- Календарь -->
       <section class="section">
         <div class="card">
           <div class="card-inner">
@@ -386,7 +343,6 @@
               <div class="calendar-year">2026</div>
             </div>
             <div class="calendar">
-              <!-- будни -->
               <div class="calendar-weekday">Пн</div>
               <div class="calendar-weekday">Вт</div>
               <div class="calendar-weekday">Ср</div>
@@ -394,157 +350,87 @@
               <div class="calendar-weekday">Пт</div>
               <div class="calendar-weekday">Сб</div>
               <div class="calendar-weekday">Вс</div>
-
-              <!-- июнь 2026 начинается с понедельника, поэтому пустых нет -->
-              <!-- 1–19 -->
-              <div class="calendar-day">1</div>
-              <div class="calendar-day">2</div>
-              <div class="calendar-day">3</div>
-              <div class="calendar-day">4</div>
-              <div class="calendar-day">5</div>
-              <div class="calendar-day">6</div>
-              <div class="calendar-day">7</div>
-
-              <div class="calendar-day">8</div>
-              <div class="calendar-day">9</div>
-              <div class="calendar-day">10</div>
-              <div class="calendar-day">11</div>
-              <div class="calendar-day">12</div>
-              <div class="calendar-day">13</div>
-              <div class="calendar-day">14</div>
-
-              <div class="calendar-day">15</div>
-              <div class="calendar-day">16</div>
-              <div class="calendar-day">17</div>
-              <div class="calendar-day">18</div>
-              <div class="calendar-day">19</div>
-              <div class="calendar-day calendar-day--active">20</div>
-              <div class="calendar-day">21</div>
-
-              <div class="calendar-day">22</div>
-              <div class="calendar-day">23</div>
-              <div class="calendar-day">24</div>
-              <div class="calendar-day">25</div>
-              <div class="calendar-day">26</div>
-              <div class="calendar-day">27</div>
-              <div class="calendar-day">28</div>
-
-              <div class="calendar-day">29</div>
-              <div class="calendar-day">30</div>
-              <!-- пустые ячейки для выравнивания -->
-              <div class="calendar-day calendar-day--empty"></div>
-              <div class="calendar-day calendar-day--empty"></div>
-              <div class="calendar-day calendar-day--empty"></div>
-              <div class="calendar-day calendar-day--empty"></div>
-              <div class="calendar-day calendar-day--empty"></div>
+              <div class="calendar-day">1</div><div class="calendar-day">2</div><div class="calendar-day">3</div>
+              <div class="calendar-day">4</div><div class="calendar-day">5</div><div class="calendar-day">6</div>
+              <div class="calendar-day">7</div><div class="calendar-day">8</div><div class="calendar-day">9</div>
+              <div class="calendar-day">10</div><div class="calendar-day">11</div><div class="calendar-day">12</div>
+              <div class="calendar-day">13</div><div class="calendar-day">14</div><div class="calendar-day">15</div>
+              <div class="calendar-day">16</div><div class="calendar-day">17</div><div class="calendar-day">18</div>
+              <div class="calendar-day">19</div><div class="calendar-day calendar-day--active">20</div><div class="calendar-day">21</div>
+              <div class="calendar-day">22</div><div class="calendar-day">23</div><div class="calendar-day">24</div>
+              <div class="calendar-day">25</div><div class="calendar-day">26</div><div class="calendar-day">27</div>
+              <div class="calendar-day">28</div><div class="calendar-day">29</div><div class="calendar-day">30</div>
             </div>
-            <div class="calendar-note">20 июня, суббота — день рождения нашей семьи</div>
+            <div class="calendar-note">20 июня, суббота — день нашей свадьбы</div>
           </div>
         </div>
       </section>
 
-      <!-- План дня -->
       <section class="section">
         <div class="card">
           <div class="card-inner">
             <h2 class="section-title">План дня</h2>
             <div class="timeline">
-
               <div class="timeline-item">
                 <div class="timeline-time">15:30</div>
-                <div class="timeline-title">Сбор гостей · ЗАГС №1</div>
-                <div class="timeline-place">
-                  Английская наб., 28, Санкт-Петербург, Россия, 190000<br>
-                  <a class="timeline-link" href="https://yandex.ru/maps/-/CPV-4855" target="_blank" rel="noopener noreferrer">
-                    Посмотреть карту
-                  </a>
+                <div class="timeline-content">
+                  <div class="timeline-title">Сбор гостей · ЗАГС №1</div>
+                  <div class="timeline-place">Английская наб., 28</div>
+                  <a class="timeline-link" href="https://yandex.ru/maps/-/CPV-4855" target="_blank">На карту</a>
                 </div>
               </div>
-
               <div class="timeline-item">
                 <div class="timeline-time">16:00</div>
-                <div class="timeline-title">Роспись · ЗАГС №1</div>
-                <div class="timeline-place">
-                  Английская наб., 28, Санкт-Петербург, Россия, 190000<br>
-                  <a class="timeline-link" href="https://yandex.ru/maps/-/CPV-4855" target="_blank" rel="noopener noreferrer">
-                    Посмотреть карту
-                  </a>
+                <div class="timeline-content">
+                  <div class="timeline-title">Торжественная роспись</div>
+                  <div class="timeline-place">ЗАГС №1</div>
                 </div>
               </div>
-
               <div class="timeline-item">
-                <div class="timeline-time">17:00–23:59</div>
-                <div class="timeline-title">Банкет · Резиденция К-5</div>
-                <div class="timeline-place">
-                  Наб. реки Крестовки, 2, Санкт-Петербург, Россия, 197022<br>
-                  <a class="timeline-link" href="https://yandex.ru/maps/-/CPV-aA7S" target="_blank" rel="noopener noreferrer">
-                    Посмотреть карту
-                  </a>
+                <div class="timeline-time">17:00</div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Банкет</div>
+                  <div class="timeline-place">Резиденция К-5, Наб. реки Крестовки, 2</div>
+                  <a class="timeline-link" href="https://yandex.ru/maps/-/CPV-aA7S" target="_blank">На карту</a>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Дресс-код -->
       <section class="section">
         <div class="card">
           <div class="card-inner">
-            <h2 class="section-title">Дресс-код — Cocktail</h2>
-            <p class="dress-subtitle">Мы будем рады, если вы поддержите стиль нашего вечера.</p>
-            <p class="dress-text">
-Мы просим отдавать предпочтение пастельным и приглушённым оттенкам
-и избегать ярких цветов и белого (для девушек).
-
-Ниже — небольшое вдохновение для ваших образов.
-            </p>
+            <h2 class="section-title">Дресс-код</h2>
+            <p class="dress-subtitle">Style: Cocktail</p>
+            <p class="dress-text">Будем признательны, если вы выберете наряды в пастельных тонах. Для дам просим избегать белого цвета.</p>
             <div class="dress-image-wrapper">
-              <!-- сюда потом можно подставить вашу картинку -->
-              <img src="INSPIRATION_IMAGE_URL_HERE" alt="Вдохновение для образов">
+              <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800" alt="Dress code">
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Подтверждение -->
       <section class="section">
         <div class="card">
           <div class="card-inner">
             <h2 class="section-title">Подтверждение</h2>
-            <p class="confirm-text">
-Мы с нетерпением ждём встречи с вами!
-Пожалуйста, сообщите нам о своём присутствии до 20 мая.
-            </p>
-            <p class="confirm-contacts">
-Анастасия — +7&nbsp;911&nbsp;278‑38‑62
-Николай — +7&nbsp;902&nbsp;044‑52‑44
-            </p>
+            <p class="letter-text">Пожалуйста, подтвердите ваше участие до 20.05.2026 любым удобным способом:</p>
+            <div class="confirm-contacts">
+              <a href="tel:+79112783862">Анастасия: +7 911 278-38-62</a><br>
+              <a href="tel:+79020445244">Николай: +7 902 044-52-44</a>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Таймер -->
       <section class="section timer-section">
-        <div class="timer-label">До нашего дня осталось</div>
         <div class="timer" id="timer">
-          <div class="timer-item">
-            <div class="timer-value" id="days">0</div>
-            <div class="timer-caption">дней</div>
-          </div>
-          <div class="timer-item">
-            <div class="timer-value" id="hours">0</div>
-            <div class="timer-caption">часов</div>
-          </div>
-          <div class="timer-item">
-            <div class="timer-value" id="minutes">0</div>
-            <div class="timer-caption">минут</div>
-          </div>
-          <div class="timer-item">
-            <div class="timer-value" id="seconds">0</div>
-            <div class="timer-caption">секунд</div>
-          </div>
+          <div class="timer-item"><div class="timer-value" id="days">0</div><div class="timer-caption">дней</div></div>
+          <div class="timer-item"><div class="timer-value" id="hours">0</div><div class="timer-caption">часов</div></div>
+          <div class="timer-item"><div class="timer-value" id="minutes">0</div><div class="timer-caption">мин</div></div>
+          <div class="timer-item"><div class="timer-value" id="seconds">0</div><div class="timer-caption">сек</div></div>
         </div>
       </section>
 
@@ -552,34 +438,17 @@
   </div>
 
   <script>
-    // Таймер до 20 июня 2026, 15:30 по Москве/СПб
     (function () {
       const target = new Date("2026-06-20T15:30:00+03:00").getTime();
-
-      const daysEl = document.getElementById("days");
-      const hoursEl = document.getElementById("hours");
-      const minutesEl = document.getElementById("minutes");
-      const secondsEl = document.getElementById("seconds");
-
-      function updateTimer() {
+      const update = () => {
         const now = new Date().getTime();
-        let diff = target - now;
-
-        if (diff < 0) diff = 0;
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-
-        daysEl.textContent = String(days);
-        hoursEl.textContent = String(hours).padStart(2, "0");
-        minutesEl.textContent = String(minutes).padStart(2, "0");
-        secondsEl.textContent = String(seconds).padStart(2, "0");
-      }
-
-      updateTimer();
-      setInterval(updateTimer, 1000);
+        const diff = Math.max(0, target - now);
+        document.getElementById("days").textContent = Math.floor(diff / 864e5);
+        document.getElementById("hours").textContent = String(Math.floor((diff % 864e5) / 36e5)).padStart(2, "0");
+        document.getElementById("minutes").textContent = String(Math.floor((diff % 36e5) / 6e4)).padStart(2, "0");
+        document.getElementById("seconds").textContent = String(Math.floor((diff % 6e4) / 1000)).padStart(2, "0");
+      };
+      update(); setInterval(update, 1000);
     })();
   </script>
 </body>
