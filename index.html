@@ -16,12 +16,11 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        body { margin: 0; padding: 0; background-color: #F9F6F0; overflow-x: hidden; }
+        body { margin: 0; padding: 0; background-color: #F9F6F0; scroll-behavior: smooth; }
         .font-serif { font-family: 'Cormorant Infant', serif; }
         .font-sans { font-family: 'Montserrat', sans-serif; }
-        /* Плавное затемнение для читаемости текста */
         .overlay-gradient {
-            background: linear-gradient(to bottom, rgba(249, 246, 240, 0.2) 0%, rgba(249, 246, 240, 0.5) 50%, rgba(249, 246, 240, 0.8) 100%);
+            background: linear-gradient(to bottom, rgba(249, 246, 240, 0.2) 0%, rgba(249, 246, 240, 0.6) 70%, rgba(249, 246, 240, 1) 100%);
         }
     </style>
 </head>
@@ -31,92 +30,107 @@
     <script type="text/babel">
         const { motion } = window.Motion;
 
-        function App() {
-            // Прямая ссылка на ваше изображение из Google Drive (через прокси для отображения)
-            const photoUrl = "https://lh3.googleusercontent.com/d/1UKkIjvRcpwiEMMLd2YnqPMmFhbKUNVy_";
-
-            const containerVariants = {
-                hidden: { opacity: 0 },
-                visible: { opacity: 1, transition: { staggerChildren: 0.6, delayChildren: 0.5 } }
-            };
-
-            const itemVariants = {
-                hidden: { opacity: 0, y: 30, filter: 'blur(8px)' },
-                visible: { 
-                    opacity: 1, y: 0, filter: 'blur(0px)',
-                    transition: { duration: 1.8, ease: [0.16, 1, 0.3, 1] } 
-                }
-            };
+        // Компонент Календаря
+        const CalendarSection = () => {
+            const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            // Июнь 2026 начинается в Понедельник (1-е число)
+            const dates = Array.from({ length: 30 }, (_, i) => i + 1);
+            const weddingDay = 20;
 
             return (
-                <main className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-                    {/* Фон с вашим изображением */}
+                <section className="py-24 px-6 bg-[#F9F6F0] flex flex-col items-center">
                     <motion.div 
-                        initial={{ scale: 1.1 }}
-                        animate={{ scale: 1 }}
-                        transition={{ duration: 20, ease: "linear" }}
-                        className="absolute inset-0 z-0"
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1 }}
+                        className="max-w-md w-full text-center"
                     >
-                        <div className="absolute inset-0 z-10 overlay-gradient" />
-                        <img 
-                            src={photoUrl} 
-                            alt="Николай и Анастасия" 
-                            className="h-full w-full object-cover grayscale-[20%] brightness-[1.05]"
-                            onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2000"; }}
-                        />
-                    </motion.div>
-
-                    <motion.div 
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="relative z-20 text-center px-6"
-                    >
-                        <motion.p 
-                            variants={itemVariants}
-                            className="font-sans uppercase tracking-[0.6em] text-[10px] md:text-xs text-[#6B5E4C] mb-12"
-                        >
-                            Приглашение на свадьбу
-                        </motion.p>
-
-                        <div className="flex flex-col items-center mb-12">
-                            <motion.h1 
-                                variants={itemVariants}
-                                className="font-serif text-6xl md:text-9xl text-[#1A1A1A] font-light"
-                            >
-                                Николай
-                            </motion.h1>
-                            
-                            <motion.div variants={itemVariants} className="my-4">
-                                <span className="font-serif text-3xl md:text-5xl italic text-[#8C7E6A]">и</span>
-                            </motion.div>
-
-                            <motion.h1 
-                                variants={itemVariants}
-                                className="font-serif text-6xl md:text-9xl text-[#1A1A1A] font-light"
-                            >
-                                Анастасия
-                            </motion.h1>
+                        <h2 className="font-serif text-4xl md:text-5xl text-[#2C2C2C] mb-4">Июнь 2026</h2>
+                        <div className="w-12 h-[1px] bg-[#8C7E6A] mx-auto mb-12 opacity-40" />
+                        
+                        <div className="grid grid-cols-7 gap-y-6 text-sm font-sans tracking-widest text-[#8C7E6A] mb-8">
+                            {days.map(day => <div key={day} className="font-light uppercase text-[10px]">{day}</div>)}
+                            {dates.map(date => (
+                                <div key={date} className="relative flex items-center justify-center h-10">
+                                    {date === weddingDay && (
+                                        <motion.div 
+                                            initial={{ scale: 0, opacity: 0 }}
+                                            whileInView={{ scale: 1, opacity: 1 }}
+                                            transition={{ delay: 0.5, duration: 0.8 }}
+                                            className="absolute w-10 h-10 border border-[#8C7E6A] rounded-full"
+                                        />
+                                    )}
+                                    <span className={`${date === weddingDay ? 'text-[#2C2C2C] font-normal' : 'text-[#A0A0A0] font-extralight'}`}>
+                                        {date}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
+                        
+                        <p className="font-serif italic text-[#8C7E6A] text-lg mt-8">
+                            Суббота, в ожидании прекрасного дня
+                        </p>
+                    </motion.div>
+                </section>
+            );
+        };
 
-                        <motion.div variants={itemVariants} className="flex flex-col items-center">
-                            <div className="w-20 h-[1px] bg-[#8C7E6A] mb-8 opacity-40" />
-                            <p className="font-sans text-[#2D2D2D] text-xl md:text-3xl tracking-[0.5em] font-extralight uppercase">
-                                20.06.2026
-                            </p>
+        function App() {
+            // Заглушка для фото (замените на прямую ссылку при необходимости)
+            const photoUrl = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000";
+
+            return (
+                <div className="overflow-x-hidden">
+                    {/* HERO SECTION */}
+                    <main className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+                        <motion.div 
+                            initial={{ scale: 1.1 }}
+                            animate={{ scale: 1 }}
+                            transition={{ duration: 20, ease: "linear" }}
+                            className="absolute inset-0 z-0"
+                        >
+                            <div className="absolute inset-0 z-10 overlay-gradient" />
+                            <img 
+                                src={photoUrl} 
+                                alt="Николай и Анастасия" 
+                                className="h-full w-full object-cover"
+                            />
                         </motion.div>
-                    </motion.div>
 
-                    {/* Скролл-индикатор */}
-                    <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 3, duration: 2 }}
-                        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-                    >
-                        <div className="w-[1px] h-16 bg-gradient-to-b from-[#8C7E6A] to-transparent opacity-60" />
-                    </motion.div>
-                </main>
+                        <motion.div 
+                            initial="hidden"
+                            animate="visible"
+                            variants={{ visible: { transition: { staggerChildren: 0.5 } } }}
+                            className="relative z-20 text-center px-6"
+                        >
+                            <motion.p variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }} className="font-sans uppercase tracking-[0.6em] text-[10px] md:text-xs text-[#6B5E4C] mb-12">
+                                Приглашение на свадьбу
+                            </motion.p>
+
+                            <div className="flex flex-col items-center mb-12">
+                                <motion.h1 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="font-serif text-6xl md:text-9xl text-[#1A1A1A] font-light">Николай</motion.h1>
+                                <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }} className="my-4 md:my-2">
+                                    <span className="font-serif text-3xl md:text-5xl italic text-[#8C7E6A]">и</span>
+                                </motion.div>
+                                <motion.h1 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="font-serif text-6xl md:text-9xl text-[#1A1A1A] font-light">Анастасия</motion.h1>
+                            </div>
+
+                            <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }} className="flex flex-col items-center">
+                                <div className="w-16 h-[1px] bg-[#8C7E6A] mb-8 opacity-40" />
+                                <p className="font-sans text-[#2D2D2D] text-xl md:text-2xl tracking-[0.4em] font-extralight uppercase">20.06.2026</p>
+                            </motion.div>
+                        </motion.div>
+
+                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-50">
+                            <span className="text-[10px] uppercase tracking-[0.3em] text-[#8C7E6A] mb-4">Листайте вниз</span>
+                            <div className="w-[1px] h-12 bg-[#8C7E6A]" />
+                        </div>
+                    </main>
+
+                    {/* CALENDAR SECTION */}
+                    <CalendarSection />
+                </div>
             );
         }
 
