@@ -22,20 +22,17 @@
         .overlay-gradient {
             background: linear-gradient(to bottom, rgba(249, 246, 240, 0.1) 0%, rgba(249, 246, 240, 0.4) 60%, rgba(249, 246, 240, 1) 100%);
         }
-        .bg-card { background-color: #ffffff; border: 1px solid #EAE2D6; }
-        /* Плавный скроллбар */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #F9F6F0; }
-        ::-webkit-scrollbar-thumb { background: #8C7E6A; border-radius: 10px; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { motion, AnimatePresence } = window.Motion;
+        const { motion } = window.Motion;
 
-        // --- ТАЙМЕР ---
+        // Функция-хелпер для генерации прямой ссылки из Google Drive
+        const getDirectLink = (id) => `https://lh3.googleusercontent.com/u/0/d/${id}`;
+
         const CountdownTimer = ({ targetDate }) => {
             const [timeLeft, setTimeLeft] = React.useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
@@ -43,10 +40,7 @@
                 const interval = setInterval(() => {
                     const now = new Date().getTime();
                     const distance = new Date(targetDate).getTime() - now;
-                    if (distance < 0) {
-                        clearInterval(interval);
-                        return;
-                    }
+                    if (distance < 0) { clearInterval(interval); return; }
                     setTimeLeft({
                         days: Math.floor(distance / (1000 * 60 * 60 * 24)),
                         hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
@@ -57,133 +51,109 @@
                 return () => clearInterval(interval);
             }, [targetDate]);
 
-            const Unit = ({ value, label }) => (
-                <div className="flex flex-col items-center mx-3 md:mx-6">
-                    <span className="text-3xl md:text-5xl font-serif font-light text-[#2C2C2C]">{value}</span>
-                    <span className="text-[10px] uppercase tracking-widest text-[#8C7E6A] mt-2 font-sans">{label}</span>
-                </div>
-            );
-
             return (
-                <div className="flex justify-center items-center py-12 border-t border-[#EAE2D6] mt-20">
-                    <Unit value={timeLeft.days} label="дней" />
-                    <div className="w-[1px] h-10 bg-[#EAE2D6]" />
-                    <Unit value={timeLeft.hours} label="часов" />
-                    <div className="w-[1px] h-10 bg-[#EAE2D6]" />
-                    <Unit value={timeLeft.minutes} label="минут" />
-                    <div className="w-[1px] h-10 bg-[#EAE2D6]" />
-                    <Unit value={timeLeft.seconds} label="секунд" />
+                <div className="flex justify-center items-center py-12 border-t border-[#EAE2D6] mt-10">
+                    {[
+                        {v: timeLeft.days, l: 'дней'},
+                        {v: timeLeft.hours, l: 'часов'},
+                        {v: timeLeft.minutes, l: 'минут'},
+                        {v: timeLeft.seconds, l: 'секунд'}
+                    ].map((item, i) => (
+                        <React.Fragment key={i}>
+                            <div className="flex flex-col items-center mx-4">
+                                <span className="text-3xl font-serif">{item.v}</span>
+                                <span className="text-[9px] uppercase tracking-widest text-[#8C7E6A]">{item.l}</span>
+                            </div>
+                            {i < 3 && <div className="w-[1px] h-8 bg-[#EAE2D6]" />}
+                        </React.Fragment>
+                    ))}
                 </div>
             );
         };
 
-        // --- ПЛАН ДНЯ ---
         const ScheduleItem = ({ time, title, location, mapLink }) => (
-            <motion.div 
-                whileInView={{ opacity: 1, x: 0 }}
-                initial={{ opacity: 0, x: -20 }}
-                viewport={{ once: true }}
-                className="relative pl-8 pb-12 border-l border-[#8C7E6A]/30 last:pb-0"
-            >
+            <div className="relative pl-8 pb-10 border-l border-[#8C7E6A]/30 last:pb-0">
                 <div className="absolute left-[-5px] top-0 w-[9px] h-[9px] rounded-full bg-[#8C7E6A]" />
-                <span className="text-sm font-sans tracking-tighter text-[#8C7E6A] uppercase">{time}</span>
-                <h3 className="font-serif text-2xl md:text-3xl my-2 text-[#1A1A1A]">{title}</h3>
-                <p className="font-sans text-sm text-[#6B5E4C] font-light leading-relaxed mb-4 max-w-xs">{location}</p>
-                <a href={mapLink} target="_blank" className="inline-block text-[10px] uppercase tracking-[0.2em] text-[#8C7E6A] border-b border-[#8C7E6A] pb-1 hover:opacity-50 transition-opacity">Посмотреть карту</a>
-            </motion.div>
+                <span className="text-[10px] font-sans tracking-widest text-[#8C7E6A] uppercase">{time}</span>
+                <h3 className="font-serif text-2xl my-1">{title}</h3>
+                <p className="font-sans text-xs text-[#6B5E4C] mb-3 leading-relaxed">{location}</p>
+                <a href={mapLink} target="_blank" className="text-[10px] uppercase border-b border-[#8C7E6A] pb-0.5 tracking-tighter">Карта</a>
+            </div>
         );
 
         function App() {
-            const photoId = "1UKkIjvRcpwiEMMLd2YnqPMmFhbKUNVy_";
+            // ID ваших файлов из ссылок
+            const heroId = "1UKkIjvRcpwiEMMLd2YnqPMmFhbKUNVy_";
             const paletteId = "1GpxIpHHytKv2W-l3gf37ddrf5wZvlpEu";
-            
-            const heroUrl = `http://googleusercontent.com/profile/picture/3{photoId}`;
-            const paletteUrl = `http://googleusercontent.com/profile/picture/4{paletteId}`;
 
             return (
-                <div className="relative">
-                    {/* HERO */}
-                    <main className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-                        <motion.div initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 15 }} className="absolute inset-0">
+                <div className="bg-[#F9F6F0]">
+                    {/* HERO SECTION */}
+                    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0">
                             <div className="absolute inset-0 z-10 overlay-gradient" />
-                            <img src={heroUrl} alt="Николай и Анастасия" className="h-full w-full object-cover" onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2000"; }} />
-                        </motion.div>
-                        <div className="relative z-20 text-center px-6">
-                            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 0.8 }} className="font-sans uppercase tracking-[0.6em] text-[10px] text-[#6B5E4C] mb-8">Save the Date</motion.p>
-                            <h1 className="font-serif text-6xl md:text-9xl text-[#1A1A1A] font-light tracking-tight mb-4">Николай <br/><span className="italic text-[#8C7E6A] text-4xl md:text-6xl">и</span> <br/>Анастасия</h1>
-                            <div className="w-12 h-[1px] bg-[#8C7E6A] mx-auto my-8 opacity-40" />
-                            <p className="font-sans text-[#2D2D2D] text-lg md:text-2xl tracking-[0.4em] font-extralight uppercase">20.06.2026</p>
+                            <img 
+                                src={getDirectLink(heroId)} 
+                                className="w-full h-full object-cover" 
+                                alt="Николай и Анастасия"
+                                onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600"; }}
+                            />
                         </div>
-                    </main>
+                        <div className="relative z-20 text-center px-6">
+                            <p className="font-sans uppercase tracking-[0.6em] text-[10px] text-[#6B5E4C] mb-6">Приглашение на свадьбу</p>
+                            <h1 className="font-serif text-6xl md:text-8xl mb-4">Николай <br/><span className="italic text-[#8C7E6A] text-4xl md:text-5xl">и</span> <br/>Анастасия</h1>
+                            <p className="font-sans text-lg tracking-[0.4em] font-light uppercase">20.06.2026</p>
+                        </div>
+                    </section>
 
                     {/* ПЛАН ДНЯ */}
-                    <section className="py-24 px-8 md:px-20 bg-[#F9F6F0]">
-                        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-16">
-                            <div>
-                                <h2 className="font-serif text-5xl md:text-6xl text-[#1A1A1A] mb-12">План дня</h2>
-                                <div className="mt-10">
-                                    <ScheduleItem time="15:30" title="Сбор гостей" location="ЗАГС №1. Английская наб., 28, Санкт-Петербург" mapLink="https://yandex.ru/maps/-/CPV-4855" />
-                                    <ScheduleItem time="16:00" title="Торжественная роспись" location="ЗАГС №1. Английская наб., 28, Санкт-Петербург" mapLink="https://yandex.ru/maps/-/CPV-4855" />
-                                    <ScheduleItem time="17:00 — 23:59" title="Свадебный банкет" location="Резиденция К-5. Наб. реки Крестовки, 2, Санкт-Петербург" mapLink="https://yandex.ru/maps/-/CPV-aA7S" />
-                                </div>
-                            </div>
-                            
-                            {/* КАЛЕНДАРЬ */}
-                            <div className="bg-white/50 p-8 rounded-sm border border-[#EAE2D6]">
-                                <h3 className="font-serif text-3xl text-center mb-8">Июнь 2026</h3>
-                                <div className="grid grid-cols-7 gap-y-4 text-center text-[10px] font-sans tracking-widest text-[#8C7E6A]">
-                                    {['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d=><div key={d}>{d}</div>)}
-                                    {Array.from({length:30}, (_,i)=>i+1).map(date=>(
-                                        <div key={date} className="relative py-2 flex items-center justify-center">
-                                            {date===20 && <div className="absolute w-8 h-8 border border-[#8C7E6A] rounded-full scale-125" />}
-                                            <span className={date===20 ? "text-black" : "opacity-30"}>{date}</span>
-                                        </div>
-                                    ))}
-                                </div>
+                    <section className="py-20 px-6 max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
+                        <div>
+                            <h2 className="font-serif text-4xl mb-10">План дня</h2>
+                            <ScheduleItem time="15:30" title="Сбор гостей" location="ЗАГС №1. Английская наб., 28" mapLink="https://yandex.ru/maps/-/CPV-4855" />
+                            <ScheduleItem time="16:00" title="Роспись" location="ЗАГС №1. Английская наб., 28" mapLink="https://yandex.ru/maps/-/CPV-4855" />
+                            <ScheduleItem time="17:00 — 23:59" title="Банкет" location="Резиденция К-5. Наб. реки Крестовки, 2" mapLink="https://yandex.ru/maps/-/CPV-aA7S" />
+                        </div>
+                        <div className="bg-white p-8 rounded shadow-sm border border-[#EAE2D6]">
+                            <h3 className="font-serif text-2xl text-center mb-6">Июнь 2026</h3>
+                            <div className="grid grid-cols-7 gap-2 text-center text-[10px] text-[#8C7E6A]">
+                                {['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d=><div key={d} className="mb-2">{d}</div>)}
+                                {Array.from({length:30}, (_,i)=>i+1).map(date=>(
+                                    <div key={date} className="relative py-2">
+                                        {date===20 && <div className="absolute inset-0 border border-[#8C7E6A] rounded-full scale-75" />}
+                                        <span className={date===20 ? "text-black font-bold" : "opacity-40"}>{date}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </section>
 
                     {/* ДРЕСС-КОД */}
-                    <section className="py-24 px-8 bg-white">
-                        <div className="max-w-3xl mx-auto text-center">
-                            <h2 className="font-serif text-5xl text-[#1A1A1A] mb-8">Dress Code</h2>
-                            <p className="font-sans font-light tracking-[0.1em] text-[#6B5E4C] mb-12 uppercase text-sm">Cocktail</p>
-                            <p className="font-sans font-light leading-loose text-[#4A4A4A] mb-16">
-                                Мы будем благодарны, если вы поддержите стиль нашего вечера. <br/>
-                                Мы просим отдавать предпочтение <span className="font-normal italic">пастельным и приглушённым оттенкам</span> и избегать ярких цветов и белого (для девушек).
+                    <section className="py-20 px-6 text-center bg-white">
+                        <div className="max-w-2xl mx-auto">
+                            <h2 className="font-serif text-4xl mb-6">Dress Code</h2>
+                            <p className="font-sans text-xs tracking-widest text-[#8C7E6A] mb-8 uppercase italic">Cocktail</p>
+                            <p className="font-sans font-light leading-loose text-sm mb-12">
+                                Мы будем благодарны, если вы поддержите стиль нашего вечера. Пастельные и приглушённые оттенки, избегая ярких цветов и белого.
                             </p>
-                            <motion.img 
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                src={paletteUrl} 
-                                alt="Palette" 
-                                className="w-full rounded-sm shadow-sm"
-                                onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2000"; }}
+                            <img 
+                                src={getDirectLink(paletteId)} 
+                                className="w-full max-w-md mx-auto rounded shadow-lg" 
+                                alt="Палитра"
+                                onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800"; }}
                             />
                         </div>
                     </section>
 
-                    {/* ПОДТВЕРЖДЕНИЕ */}
-                    <section className="py-24 px-8 bg-[#F9F6F0] text-center">
-                        <div className="max-w-2xl mx-auto">
-                            <h2 className="font-serif text-4xl md:text-5xl text-[#1A1A1A] mb-8">Подтверждение</h2>
-                            <p className="font-serif italic text-2xl text-[#8C7E6A] mb-10">Мы с нетерпением ждем встречи с вами!</p>
-                            <p className="font-sans font-light tracking-widest text-sm mb-12 uppercase">Пожалуйста, сообщите о своем присутствии до 20 мая</p>
-                            
-                            <div className="grid md:grid-cols-2 gap-8 mb-20">
-                                <div className="p-6 bg-white/40 border border-[#EAE2D6]">
-                                    <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[#8C7E6A] mb-2">Невеста</p>
-                                    <a href="tel:+79112783862" className="font-serif text-2xl">Анастасия</a>
-                                </div>
-                                <div className="p-6 bg-white/40 border border-[#EAE2D6]">
-                                    <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[#8C7E6A] mb-2">Жених</p>
-                                    <a href="tel:+79020445244" className="font-serif text-2xl">Николай</a>
-                                </div>
-                            </div>
-
-                            <CountdownTimer targetDate="2026-06-20T15:30:00" />
+                    {/* КОНТАКТЫ И ТАЙМЕР */}
+                    <section className="py-20 px-6 text-center">
+                        <h2 className="font-serif text-4xl mb-6">Ждем вас!</h2>
+                        <p className="font-sans text-xs uppercase tracking-widest mb-10">До 20 мая сообщите нам о присутствии</p>
+                        <div className="flex flex-col md:flex-row justify-center gap-6 mb-10">
+                            <a href="tel:+79112783862" className="p-4 bg-white border border-[#EAE2D6] font-serif text-xl">Анастасия</a>
+                            <a href="tel:+79020445244" className="p-4 bg-white border border-[#EAE2D6] font-serif text-xl">Николай</a>
                         </div>
+                        <CountdownTimer targetDate="2026-06-20T15:30:00" />
                     </section>
                 </div>
             );
