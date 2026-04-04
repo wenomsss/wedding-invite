@@ -44,15 +44,23 @@
             border: 1px solid #EAE2D6;
             pointer-events: none;
         }
+        /* Анимация пульсации для кнопки музыки */
+        @keyframes slow-pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        .music-btn-pulse {
+            animation: slow-pulse 3s infinite ease-in-out;
+        }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { motion } = window.Motion;
+        const { motion, AnimatePresence } = window.Motion;
 
-        // Функция для формирования прямой ссылки на Google Drive
         const getDirectLink = (id) => `https://lh3.googleusercontent.com/d/${id}`;
 
         const containerVariants = {
@@ -69,6 +77,43 @@
                 opacity: 1, y: 0, filter: 'blur(0px)',
                 transition: { duration: 1.8, ease: [0.16, 1, 0.3, 1] } 
             }
+        };
+
+        const MusicPlayer = () => {
+            const [isPlaying, setIsPlaying] = React.useState(false);
+            const audioRef = React.useRef(null);
+            
+            // Джазовая мелодия (Royalty Free Jazz)
+            const musicUrl = "https://www.bensound.com/bensound-music/bensound-thejazzpiano.mp3";
+
+            const toggleMusic = () => {
+                if (isPlaying) {
+                    audioRef.current.pause();
+                } else {
+                    audioRef.current.play();
+                }
+                setIsPlaying(!isPlaying);
+            };
+
+            return (
+                <div className="fixed bottom-6 right-6 z-50">
+                    <audio ref={audioRef} src={musicUrl} loop />
+                    <button 
+                        onClick={toggleMusic}
+                        className={`w-12 h-12 rounded-full bg-white/80 backdrop-blur-md border border-[#EAE2D6] shadow-lg flex items-center justify-center text-[#8C7E6A] transition-all duration-500 ${isPlaying ? 'music-btn-pulse' : 'opacity-70'}`}
+                    >
+                        {isPlaying ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M6 3a1 1 0 0 1 1 1v8a1 1 0 0 1-2 0V4a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v8a1 1 0 0 1-2 0V4a1 1 0 0 1 1-1z"/>
+                            </svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                            </svg>
+                        )}
+                    </button>
+                </div>
+            );
         };
 
         const CountdownTimer = ({ targetDate }) => {
@@ -125,10 +170,12 @@
 
         function App() {
             const heroId = "1UKkIjvRcpwiEMMLd2YnqPMmFhbKUNVy_";
-            const paletteId = "1nGfb8tUxz1Wqf1NJ_yKuvCWpUZUYlH2J"; // Обновленный ID палитры
+            const paletteId = "1nGfb8tUxz1Wqf1NJ_yKuvCWpUZUYlH2J";
 
             return (
                 <div className="bg-[#F9F6F0] w-full overflow-x-hidden">
+                    <MusicPlayer />
+                    
                     {/* HERO */}
                     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden px-4">
                         <motion.div initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 15 }} className="absolute inset-0 z-0">
