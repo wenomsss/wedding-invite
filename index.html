@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Приглашение: Николай и Анастасия</title>
+    <title>Приглашение: Николай & Анастасия</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,9 +20,16 @@
         .font-serif { font-family: 'Cormorant Infant', serif; }
         .font-sans { font-family: 'Montserrat', sans-serif; }
         .overlay-gradient {
-            background: linear-gradient(to bottom, rgba(249, 246, 240, 0.1) 0%, rgba(249, 246, 240, 0.4) 60%, rgba(249, 246, 240, 1) 100%);
+            background: linear-gradient(to bottom, rgba(249, 246, 240, 0.1) 0%, rgba(249, 246, 240, 0.3) 50%, rgba(249, 246, 240, 0.7) 100%);
         }
-        .bg-card { background-color: #ffffff; border: 1px solid #EAE2D6; }
+        /* Подложка под текст для читаемости */
+        .text-backdrop {
+            background: rgba(249, 246, 240, 0.4);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 2px;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -32,7 +39,25 @@
         const { motion } = window.Motion;
 
         // Генератор ссылки для Google Drive
-        const getDirectLink = (id) => `https://lh3.googleusercontent.com/d/${id}`;
+        const getDirectLink = (id) => `https://lh3.googleusercontent.com/u/0/d/${id}`;
+
+        // Варианты анимации для контейнера (Stagger effect)
+        const containerVariants = {
+            hidden: { opacity: 0 },
+            visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.6, delayChildren: 0.4 }
+            }
+        };
+
+        // Варианты анимации для элементов (Blur + FadeIn)
+        const itemVariants = {
+            hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
+            visible: { 
+                opacity: 1, y: 0, filter: 'blur(0px)',
+                transition: { duration: 1.8, ease: [0.16, 1, 0.3, 1] } 
+            }
+        };
 
         const CountdownTimer = ({ targetDate }) => {
             const [timeLeft, setTimeLeft] = React.useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -72,6 +97,7 @@
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
+                transition={{ duration: 1 }}
                 className="relative pl-8 pb-12 border-l border-[#8C7E6A]/30 last:pb-0"
             >
                 <div className="absolute left-[-5px] top-0 w-[9px] h-[9px] rounded-full bg-[#8C7E6A]" />
@@ -93,21 +119,39 @@
                 <div className="bg-[#F9F6F0]">
                     {/* HERO */}
                     <section className="relative h-screen flex items-center justify-center overflow-hidden">
-                        <div className="absolute inset-0">
+                        <motion.div initial={{ scale: 1.15 }} animate={{ scale: 1 }} transition={{ duration: 15, ease: "easeOut" }} className="absolute inset-0 z-0">
                             <div className="absolute inset-0 z-10 overlay-gradient" />
                             <img 
                                 src={getDirectLink(heroId)} 
                                 className="w-full h-full object-cover" 
-                                alt="Николай и Анастасия"
+                                alt="Николай & Анастасия"
                                 onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000"; }}
                             />
-                        </div>
-                        <div className="relative z-20 text-center px-6">
-                            <p className="font-sans uppercase tracking-[0.6em] text-[10px] text-[#6B5E4C] mb-8">Save the Date</p>
-                            <h1 className="font-serif text-6xl md:text-9xl text-[#1A1A1A] font-light tracking-tight mb-4">Николай <br/><span className="italic text-[#8C7E6A] text-4xl md:text-6xl text-center block my-2">и</span> Анастасия</h1>
-                            <div className="w-12 h-[1px] bg-[#8C7E6A] mx-auto my-8 opacity-40" />
-                            <p className="font-sans text-[#2D2D2D] text-lg md:text-2xl tracking-[0.4em] font-extralight uppercase">20.06.2026</p>
-                        </div>
+                        </motion.div>
+                        
+                        {/* Восстановленная анимация появления и подложка */}
+                        <motion.div 
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
+                            className="relative z-20 text-center px-6 text-backdrop"
+                        >
+                            <motion.p variants={itemVariants} className="font-sans uppercase tracking-[0.6em] text-[10px] text-[#6B5E4C] mb-8">Save the Date</motion.p>
+                            
+                            <div className="flex flex-col items-center mb-10">
+                                <motion.h1 variants={itemVariants} className="font-serif text-6xl md:text-9xl text-[#1A1A1A] font-light tracking-tight mb-4">Николай</motion.h1>
+                                {/* Замена 'и' на '&' */}
+                                <motion.div variants={itemVariants} className="my-2">
+                                    <span className="font-serif text-4xl md:text-6xl italic text-[#8C7E6A]">&</span>
+                                </motion.div>
+                                <motion.h1 variants={itemVariants} className="font-serif text-6xl md:text-9xl text-[#1A1A1A] font-light tracking-tight">Анастасия</motion.h1>
+                            </div>
+
+                            <motion.div variants={itemVariants} className="flex flex-col items-center">
+                                <div className="w-12 h-[1px] bg-[#8C7E6A] mb-8 opacity-40" />
+                                <p className="font-sans text-[#2D2D2D] text-lg md:text-2xl tracking-[0.4em] font-extralight uppercase">20.06.2026</p>
+                            </motion.div>
+                        </motion.div>
                     </section>
 
                     {/* ПЛАН ДНЯ */}
@@ -115,27 +159,9 @@
                         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-16">
                             <div>
                                 <h2 className="font-serif text-5xl md:text-6xl text-[#1A1A1A] mb-12">План дня</h2>
-                                <ScheduleItem 
-                                    time="15:30" 
-                                    title="Сбор гостей" 
-                                    location="ЗАГС №1" 
-                                    address="Английская наб., 28, Санкт-Петербург, Россия, 190000" 
-                                    mapLink="https://yandex.ru/maps/-/CPV-4855" 
-                                />
-                                <ScheduleItem 
-                                    time="16:00" 
-                                    title="Роспись" 
-                                    location="ЗАГС №1" 
-                                    address="Английская наб., 28, Санкт-Петербург, Россия, 190000" 
-                                    mapLink="https://yandex.ru/maps/-/CPV-4855" 
-                                />
-                                <ScheduleItem 
-                                    time="17:00 — 23:59" 
-                                    title="Банкет" 
-                                    location="Резиденция К-5" 
-                                    address="Наб. реки Крестовки, 2, Санкт-Петербург, Россия, 197022" 
-                                    mapLink="https://yandex.ru/maps/-/CPV-aA7S" 
-                                />
+                                <ScheduleItem time="15:30" title="Сбор гостей" location="ЗАГС №1" address="Английская наб., 28, Санкт-Петербург" mapLink="https://yandex.ru/maps/-/CPV-4855" />
+                                <ScheduleItem time="16:00" title="Роспись" location="ЗАГС №1" address="Английская наб., 28, Санкт-Петербург" mapLink="https://yandex.ru/maps/-/CPV-4855" />
+                                <ScheduleItem time="17:00 — 23:59" title="Банкет" location="Резиденция К-5" address="Наб. реки Крестовки, 2, Санкт-Петербург" mapLink="https://yandex.ru/maps/-/CPV-aA7S" />
                             </div>
                             
                             <div className="bg-white p-10 rounded shadow-sm border border-[#EAE2D6] self-start">
@@ -149,7 +175,6 @@
                                         </div>
                                     ))}
                                 </div>
-                                <p className="font-serif italic text-[#8C7E6A] text-center mt-10">Суббота</p>
                             </div>
                         </div>
                     </section>
@@ -160,16 +185,11 @@
                             <h2 className="font-serif text-5xl text-[#1A1A1A] mb-8">Dress Code</h2>
                             <p className="font-sans font-light tracking-[0.1em] text-[#6B5E4C] mb-12 uppercase text-sm italic">Cocktail</p>
                             <p className="font-sans font-light leading-relaxed text-[#4A4A4A] mb-16 text-sm md:text-base">
-                                Мы будем благодарны, если вы поддержите стиль нашего вечера. <br className="hidden md:block"/>
-                                Мы просим отдавать предпочтение <span className="font-medium italic text-[#8C7E6A]">пастельным и приглушённым оттенкам</span> <br className="hidden md:block"/>
+                                Мы будем благодарны, если вы поддержите стиль нашего вечера. <br/>
+                                Мы просим отдавать предпочтение <span className="font-medium italic text-[#8C7E6A]">пастельным и приглушённым оттенкам</span> <br/>
                                 и избегать ярких цветов и белого (для девушек).
                             </p>
-                            <img 
-                                src={getDirectLink(paletteId)} 
-                                className="w-full max-w-xl mx-auto rounded shadow-sm" 
-                                alt="Вдохновение"
-                                onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2000"; }}
-                            />
+                            <img src={getDirectLink(paletteId)} className="w-full max-w-xl mx-auto rounded shadow-sm" alt="Вдохновение" onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2000"; }} />
                         </div>
                     </section>
 
@@ -192,7 +212,6 @@
                                     <a href="tel:+79020445244" className="font-sans text-sm tracking-tighter text-[#2C2C2C]">+7 (902) 044-52-44</a>
                                 </div>
                             </div>
-
                             <CountdownTimer targetDate="2026-06-20T15:30:00" />
                         </div>
                     </section>
