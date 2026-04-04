@@ -132,8 +132,6 @@
                             animate="visible"
                             className="relative z-20 text-center w-full max-w-lg text-backdrop"
                         >
-                            {/* Строка Save the Date удалена по запросу */}
-                            
                             <div className="flex flex-col items-center mb-6 md:mb-10">
                                 <motion.h1 variants={itemVariants} className="font-serif text-5xl md:text-8xl text-[#1A1A1A] font-light tracking-tight leading-tight">Николай</motion.h1>
                                 <motion.div variants={itemVariants} className="my-2">
@@ -181,11 +179,14 @@
                         <div className="max-w-3xl mx-auto text-center">
                             <h2 className="font-serif text-4xl md:text-5xl text-[#1A1A1A] mb-6">Dress Code</h2>
                             <p className="font-sans font-light tracking-[0.1em] text-[#6B5E4C] mb-10 md:mb-12 uppercase text-xs italic">Cocktail</p>
+                            {/* Обновленный текст Dress Code */}
                             <p className="font-sans font-light leading-relaxed text-[#4A4A4A] mb-12 md:mb-16 text-sm md:text-base px-4">
                                 Мы будем благодарны, если вы поддержите стиль нашего вечера. <br className="hidden md:block"/>
-                                Отдавайте предпочтение <span className="font-medium italic text-[#8C7E6A]">пастельным оттенкам</span> <br className="hidden md:block"/>
-                                и избегайте ярких цветов и белого (для девушек).
+                                Пожалуйста, отдавайте предпочтение <span className="font-medium italic text-[#8C7E6A]">пастельным или приглушенным оттенкам</span> <br className="hidden md:block"/>
+                                и избегайте белого (для девушек).
                             </p>
+                            {/* Заголовок над изображением */}
+                            <p className="font-serif italic text-lg text-[#8C7E6A] mb-6">Вдохновение для ваших образов:</p>
                             <img src={getDirectLink(paletteId)} className="w-full max-w-xl mx-auto rounded-xl shadow-sm" alt="Вдохновение" onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2000"; }} />
                         </div>
                     </section>
