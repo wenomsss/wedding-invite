@@ -10,21 +10,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@200;300&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #F9F6F0;
-            overflow-x: hidden;
-        }
+        body { margin: 0; padding: 0; background-color: #F9F6F0; overflow-x: hidden; }
         .font-serif { font-family: 'Cormorant Infant', serif; }
         .font-sans { font-family: 'Montserrat', sans-serif; }
+        /* Плавное затемнение для читаемости текста */
+        .overlay-gradient {
+            background: linear-gradient(to bottom, rgba(249, 246, 240, 0.2) 0%, rgba(249, 246, 240, 0.5) 50%, rgba(249, 246, 240, 0.8) 100%);
+        }
     </style>
 </head>
 <body>
@@ -34,91 +32,89 @@
         const { motion } = window.Motion;
 
         function App() {
+            // Прямая ссылка на ваше изображение из Google Drive (через прокси для отображения)
+            const photoUrl = "https://lh3.googleusercontent.com/d/1UKkIjvRcpwiEMMLd2YnqPMmFhbKUNVy_";
+
             const containerVariants = {
                 hidden: { opacity: 0 },
-                visible: {
-                    opacity: 1,
-                    transition: { staggerChildren: 0.6, delayChildren: 0.3 }
-                }
+                visible: { opacity: 1, transition: { staggerChildren: 0.6, delayChildren: 0.5 } }
             };
 
             const itemVariants = {
-                hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
+                hidden: { opacity: 0, y: 30, filter: 'blur(8px)' },
                 visible: { 
-                    opacity: 1, 
-                    y: 0, 
-                    filter: 'blur(0px)',
-                    transition: { duration: 1.5, ease: [0.16, 1, 0.3, 1] } 
+                    opacity: 1, y: 0, filter: 'blur(0px)',
+                    transition: { duration: 1.8, ease: [0.16, 1, 0.3, 1] } 
                 }
             };
 
             return (
                 <main className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-                    {/* Фоновый слой с эффектом зума */}
+                    {/* Фон с вашим изображением */}
                     <motion.div 
-                        initial={{ scale: 1.2 }}
+                        initial={{ scale: 1.1 }}
                         animate={{ scale: 1 }}
-                        transition={{ duration: 15, ease: "easeOut" }}
+                        transition={{ duration: 20, ease: "linear" }}
                         className="absolute inset-0 z-0"
                     >
-                        <div className="absolute inset-0 bg-white/40 z-10" />
+                        <div className="absolute inset-0 z-10 overlay-gradient" />
                         <img 
-                            src="https://drive.google.com/file/d/1UKkIjvRcpwiEMMLd2YnqPMmFhbKUNVy_/view?usp=sharing" 
-                            alt="Background" 
-                            className="h-full w-full object-cover"
+                            src={photoUrl} 
+                            alt="Николай и Анастасия" 
+                            className="h-full w-full object-cover grayscale-[20%] brightness-[1.05]"
+                            onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2000"; }}
                         />
                     </motion.div>
 
-                    {/* Контент */}
                     <motion.div 
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
-                        className="relative z-20 text-center px-4"
+                        className="relative z-20 text-center px-6"
                     >
                         <motion.p 
                             variants={itemVariants}
-                            className="font-sans uppercase tracking-[0.5em] text-[10px] md:text-xs text-[#8C7E6A] mb-8"
+                            className="font-sans uppercase tracking-[0.6em] text-[10px] md:text-xs text-[#6B5E4C] mb-12"
                         >
-                            Save the Date
+                            Приглашение на свадьбу
                         </motion.p>
 
-                        <div className="flex flex-col items-center mb-10">
+                        <div className="flex flex-col items-center mb-12">
                             <motion.h1 
                                 variants={itemVariants}
-                                className="font-serif text-6xl md:text-9xl text-[#2C2C2C] font-light tracking-wide"
+                                className="font-serif text-6xl md:text-9xl text-[#1A1A1A] font-light"
                             >
                                 Николай
                             </motion.h1>
                             
-                            <motion.div variants={itemVariants} className="my-2">
+                            <motion.div variants={itemVariants} className="my-4">
                                 <span className="font-serif text-3xl md:text-5xl italic text-[#8C7E6A]">и</span>
                             </motion.div>
 
                             <motion.h1 
                                 variants={itemVariants}
-                                className="font-serif text-6xl md:text-9xl text-[#2C2C2C] font-light tracking-wide"
+                                className="font-serif text-6xl md:text-9xl text-[#1A1A1A] font-light"
                             >
                                 Анастасия
                             </motion.h1>
                         </div>
 
                         <motion.div variants={itemVariants} className="flex flex-col items-center">
-                            <div className="w-16 h-[1px] bg-[#8C7E6A] mb-8 opacity-30" />
-                            <p className="font-sans text-[#4A4A4A] text-lg md:text-2xl tracking-[0.4em] font-extralight uppercase">
+                            <div className="w-20 h-[1px] bg-[#8C7E6A] mb-8 opacity-40" />
+                            <p className="font-sans text-[#2D2D2D] text-xl md:text-3xl tracking-[0.5em] font-extralight uppercase">
                                 20.06.2026
                             </p>
                         </motion.div>
                     </motion.div>
 
-                    {/* Декоративный элемент снизу */}
+                    {/* Скролл-индикатор */}
                     <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 2.5, duration: 2 }}
-                        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center"
+                        transition={{ delay: 3, duration: 2 }}
+                        className="absolute bottom-8 left-1/2 -translate-x-1/2"
                     >
-                        <div className="w-[1px] h-12 bg-gradient-to-b from-[#8C7E6A] to-transparent opacity-50" />
+                        <div className="w-[1px] h-16 bg-gradient-to-b from-[#8C7E6A] to-transparent opacity-60" />
                     </motion.div>
                 </main>
             );
